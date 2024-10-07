@@ -91,9 +91,6 @@ const Footer = () => {
             alt="logo"
             className="brightness-0 invert mx-auto md:mx-0"
           />
-          <p className="text-sm text-dark-light text-center mt-4 md:text-left md:text-base lg:text-sm">
-            Build a modern and creative website with crealand
-          </p>
           <ul className="flex justify-center items-center mt-5 space-x-4 text-gray-300 md:justify-start">
             <li>
               <a href="/">
