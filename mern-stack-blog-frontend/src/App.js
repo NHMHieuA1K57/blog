@@ -22,10 +22,7 @@ function App() {
           <Route path="posts/manage" element={<ManagePosts />} />
           <Route path="posts/manage/edit/:slug" element={<EditPost />} />
           <Route path="categories/manage" element={<Categories />} />
-          <Route
-            path="categories/manage/edit/:slug"
-            element={<EditCategories />}
-          />
+          <Route path="categories/manage/edit/:slug" element={<EditCategories />} />
           <Route path="users/manage" element={<Users />} />
         </Route> */}
       </Routes>
