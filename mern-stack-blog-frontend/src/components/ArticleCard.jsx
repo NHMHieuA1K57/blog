@@ -1,17 +1,20 @@
 import React from "react";
 import { images } from "../constants";
 import { BsCheckLg } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 const ArticleCard = ({ post, className }) => {
   return (
     <div
       className={`overflow-hidden rounded-xl shadow-[rgba(7,_65,_210,_0.1)_0px_9px_30px] ${className}`}
     >
-      <img
-        src={images.Post1Image}
-        alt="title"
-        className="h-auto w-full object-cover object-center md:h-52 lg:h-48 xl:h-60"
-      />
+      <Link to={`/blog/123`}>
+        <img
+          src={images.Post1Image}
+          alt="title"
+          className="h-auto w-full object-cover object-center md:h-52 lg:h-48 xl:h-60"
+        />
+      </Link>
       <dir className="p-5">
         <h2 className="font-roboto text-xl font-bold text-dark-soft md:text-2xl lg:text-[28px]">
           Future of Work

@@ -5,6 +5,7 @@ import "./App.css";
 import HomePage from "./pages/home/HomePage";
 import LoginPage from "./pages/login/LoginPage";
 import RegisterPage from "./pages/register/RegisterPage";
+import ArticleDetailPage from "./pages/articleDetail/ArticleDetailPage";
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
       <Routes>
         <Route index path="/" element={<HomePage />} />
         {/* <Route path="/blog" element={<BlogPage />} /> */}
-        {/* <Route path="/blog/:slug" element={<ArticleDetailPage />} /> */}
+        <Route path="/blog/:id" element={<ArticleDetailPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         {/* <Route path="/profile" element={<ProfilePage />} /> */}
