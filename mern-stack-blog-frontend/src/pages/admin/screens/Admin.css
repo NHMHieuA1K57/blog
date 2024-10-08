@@ -1,0 +1,157 @@
+/* Dashboard.css */
+.dashboard-container {
+    display: flex;
+    padding: 20px;
+  }
+  
+  .sidebar {
+    width: 25%;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .comments-section {
+    margin-top: 35px;
+  }
+  
+  .comments-section h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .comments-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .comments-section ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+  }
+  
+  .comment-text {
+    flex-grow: 1;
+    margin-left: 10px;
+  }
+  
+  .view-icon {
+    color: #007bff;
+    cursor: pointer;
+  }
+  
+  .view-more-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .main-content {
+    width: 75%;
+    padding: 20px;
+    margin-left: 20px;
+  }
+  
+  .search-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+  
+  .search-bar input {
+    padding: 10px;
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .search-bar button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .posts-section h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .posts-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .post-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background-color: white;
+  }
+  
+  .post-avatar {
+    width: 50px;
+    height: 50px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .post-info {
+    display: flex;
+  }
+  
+  .post-text h4 {
+    margin: 5px 0;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .post-actions {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .action-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  
+  .view-more-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+  }
