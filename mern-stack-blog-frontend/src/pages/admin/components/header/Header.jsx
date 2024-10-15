@@ -1,43 +1,42 @@
-import { Link, useNavigate } from "react-router-dom";
 import { useWindowSize } from "@uidotdev/usehooks";
+import { Link, useNavigate } from "react-router-dom";
 
-import { images } from "../../../../constants";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { AiFillDashboard, AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { FaComments, FaUser } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
-import NavItem from "./NavItem";
-import NavItemCollapse from "./NavItemCollapse";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { createPost } from "../../../../services/index/posts";
+import { images } from "../../../../constants";
+import NavItem from "./NavItem";
+import { FaBlog } from "react-icons/fa6";
+
 
 const Header = () => {
   const navigate = useNavigate();
   const userState = useSelector((state) => state.user);
   const queryClient = useQueryClient();
-  const [isMenuActive, setIsMenuActive] = useState(false);
+  const [isMenuActive, setIsMenuActive] = useState(true);
   const [activeNavName, setActiveNavName] = useState("dashboard");
   const windowSize = useWindowSize();
 
-  const { mutate: mutateCreatePost, isLoading: isLoadingCreatePost } =
-    useMutation({
-      mutationFn: ({ slug, token }) => {
-        return createPost({
-          token,
-        });
-      },
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(["posts"]);
-        toast.success("Post is created, edit that now!");
-        navigate(`/admin/posts/manage/edit/${data.slug}`);
-      },
-      onError: (error) => {
-        toast.error(error.message);
-        console.log(error);
-      },
-    });
+  // const { mutate: mutateCreatePost, isLoading: isLoadingCreatePost } =
+  //   useMutation({
+  //     mutationFn: ({ slug, token }) => {
+  //       return createPost({
+  //         token,
+  //       });
+  //     },
+  //     onSuccess: (data) => {
+  //       queryClient.invalidateQueries(["posts"]);
+  //       toast.success("Post is created, edit that now!");
+  //       navigate(`/admin/posts/manage/edit/${data.slug}`);
+  //     },
+  //     onError: (error) => {
+  //       toast.error(error.message);
+  //       console.log(error);
+  //     },
+  //   });
 
   const toggleMenuHandler = () => {
     setIsMenuActive((prevState) => !prevState);
@@ -51,9 +50,9 @@ const Header = () => {
     }
   }, [windowSize.width]);
 
-  const handleCreateNewPost = ({ token }) => {
-    mutateCreatePost({ token });
-  };
+  // const handleCreateNewPost = ({ token }) => {
+  //   mutateCreatePost({ token });
+  // };
 
   return (
     <header className="flex h-fit w-full items-center justify-between p-4 lg:h-full lg:max-w-[300px] lg:flex-col lg:items-start lg:justify-start lg:p-0">
@@ -101,32 +100,29 @@ const Header = () => {
                 activeNavName={activeNavName}
                 setActiveNavName={setActiveNavName}
               />
-
-              <NavItemCollapse
-                title="Posts"
+              <NavItem
+                title="Categories"
+                link="/admin/categories/manage"
                 icon={<MdDashboard className="text-xl" />}
-                name="posts"
+                name="categories"
                 activeNavName={activeNavName}
                 setActiveNavName={setActiveNavName}
-              >
-                <Link to="/admin/posts/manage">Manage all posts</Link>
-                <button
-                  disabled={isLoadingCreatePost}
-                  className="text-start disabled:opacity-60 disabled:cursor-not-allowed"
-                  onClick={() =>
-                    handleCreateNewPost({ token: userState.userInfo.token })
-                  }
-                >
-                  Add New Post
-                </button>
-                <Link to="/admin/categories/manage">Categories</Link>
-              </NavItemCollapse>
+              />
 
               <NavItem
                 title="Users"
                 link="/admin/users/manage"
                 icon={<FaUser className="text-xl" />}
                 name="users"
+                activeNavName={activeNavName}
+                setActiveNavName={setActiveNavName}
+              />
+
+              <NavItem
+                title="Posts"
+                link="/admin/posts/manage"
+                icon={<FaBlog className="text-xl" />}
+                name="posts"
                 activeNavName={activeNavName}
                 setActiveNavName={setActiveNavName}
               />

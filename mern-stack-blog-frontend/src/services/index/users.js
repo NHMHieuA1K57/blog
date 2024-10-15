@@ -17,7 +17,12 @@ export const signup = async ({ name, email, password }) => {
 
 export const login = async ({ email, password }) => {
   try {
-    const { data } = await axios.post("/api/users/login", {
+    // const { data } = await axios.post("/api/users/login", {
+    //   email,
+    //   password,
+    // });
+
+    const {data} = await axios.get("http://localhost:9999/users", {
       email,
       password,
     });

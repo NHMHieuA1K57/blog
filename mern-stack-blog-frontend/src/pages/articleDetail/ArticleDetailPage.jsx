@@ -5,12 +5,7 @@ import { images } from "../../constants";
 import SuggestedPosts from "./container/SuggestedPosts";
 import SocialShareButtons from "../../components/SocialShareButtons";
 import CommentContainer from "../../components/comments/CommentContainer";
-
-const breadCrumbsData = [
-  { name: "Home", link: "/" },
-  { name: "Blog", link: "/blog" },
-  { name: "Article", link: "/blog/1" },
-];
+import { breadCrumbsData, tags } from "../../constants/dataMock";
 
 const posts = [
   {
@@ -37,17 +32,6 @@ const posts = [
     images: images.Post1Image,
     createAt: "2021-09-01",
   },
-];
-
-const tags = [
-  "Education",
-  "Children",
-  "Better",
-  "Medical",
-  "Health",
-  "Help",
-  "Donation",
-  "Charity",
 ];
 
 const ArticleDetailPage = () => {
@@ -83,14 +67,17 @@ const ArticleDetailPage = () => {
               lectus proin.
             </p>
           </div>
-          <CommentContainer className={"mt-10"} logginedUserId="a"/>
+          <CommentContainer className={"mt-10"} logginedUserId="a" />
         </article>
-        <SuggestedPosts
-          header="Latest Article"
-          className="mt-8 lg:mt-0 lg:max-w-xs"
-          posts={posts}
-          tags={tags}
-        />
+        <div className="flex flex-col gap-5">
+          <SuggestedPosts
+            header="Latest Article"
+            className="mt-8 lg:mt-0 lg:max-w-xs"
+            posts={posts}
+            tags={tags}
+          />
+          <SocialShareButtons className="mt-8 lg:mt-0" />
+        </div>
       </section>
     </MainLayout>
   );

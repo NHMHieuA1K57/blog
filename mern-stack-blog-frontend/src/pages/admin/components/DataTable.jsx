@@ -82,13 +82,13 @@ const DataTable = ({
                   )}
                 </tbody>
               </table>
-              {!isLoading && (
+              {/* {!isLoading && (
                 <Pagination
                   onPageChange={(page) => setCurrentPage(page)}
                   currentPage={currentPage}
                   totalPageCount={JSON.parse(headers?.["x-totalpagecount"])}
                 />
-              )}
+              )} */}
             </div>
           </div>
         </div>

@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "avatar": "",
+      "username": "John Doe",
+      "email": "fuck2003@gmail.com",
+      "password": "123456",
+      "verified": false,
+      "admin": false
+    },
+    {
+      "id": "2",
+      "avatar": "",
+      "username": "Duy",
+      "email": "duy@gmail.com",
+      "password": "123456",
+      "verified": false,
+      "admin": true
+    }
+  ]
+}
