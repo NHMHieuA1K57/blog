@@ -12,7 +12,8 @@ const accountSchema = new mongoose.Schema({
     email: {
         type: String,
         required: [true,"Email is required"],
-        unique: [true, "Email is duplicate"]
+        unique: [true, "Email is duplicate"],
+        match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"],
     },
     password: {
         type: String,
