@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const logger = require("morgan");
 const bodyParser = require("body-parser");
 const httpErrors = require("http-errors");
+const DB = require("./models/index");
 
 require("dotenv").config();
 
@@ -39,5 +40,6 @@ const HOST = process.env.HOST_NAME || "localhost";
 const PORT = process.env.PORT || 9999;
 app.listen(PORT, HOST , async() => {
     console.log(`Server running at http://${HOST}:${PORT}`);
+    await DB.connectDB();
   });
   
