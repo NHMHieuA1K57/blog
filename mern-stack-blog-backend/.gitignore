@@ -43,3 +43,11 @@ docker-compose.override.yml
 docker-compose.yml
 
 # Nếu dùng pm2
+pm2.log
+pids/
+
+# Thư mục coverage nếu dùng các công cụ kiểm thử (ví dụ: Jest, Mocha)
+coverage/
+
+# Nếu có sử dụng các build tool như Babel
+.cache/
