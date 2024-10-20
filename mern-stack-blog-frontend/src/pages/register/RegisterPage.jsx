@@ -1,6 +1,6 @@
-import React from "react";
+import React,{ useState } from "react";
 import { Link } from "react-router-dom";
-
+import axios from "axios";
 import MainLayout from "../../components/MainLayout";
 
 const RegisterPage = () => {
@@ -50,6 +50,96 @@ const RegisterPage = () => {
 
   // const password = watch("password");
 
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const validateEmail = (email) => {
+    // Đơn giản hóa kiểm tra email
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // console.log(formData);
+    setError("");
+    setMessage("");
+
+    // Kiểm tra dữ liệu
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await axios.post("http://localhost:9999/account/api/register", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (response.status === 201 || response.status === 200) {
+        setMessage("Registration successful! You can now login.");
+        setError("");
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+      } else {
+        setError("Registration failed. Please try again.");
+        setMessage("");
+      }
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("An error occurred. Please try again.");
+      }
+      setMessage("");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <MainLayout>
       <section className="container mx-auto px-5 py-10">
@@ -57,7 +147,7 @@ const RegisterPage = () => {
           <h1 className="mb-8 text-center font-roboto text-2xl font-bold text-dark-hard">
             Sign Up
           </h1>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="mb-6 flex w-full flex-col">
               <label
                 htmlFor="name"
@@ -68,27 +158,14 @@ const RegisterPage = () => {
               <input
                 type="text"
                 id="name"
-                // {...register("name", {
-                //   minLength: {
-                //     value: 1,
-                //     message: "Name length must be at least 1 character",
-                //   },
-                //   required: {
-                //     value: true,
-                //     message: "Name is required",
-                //   },
-                // })}
                 placeholder="Enter name"
-                // className={`placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-4 font-semibold block outline-none border ${
-                //   errors.name ? "border-red-500" : "border-[#c3cad9]"
-                // }`}
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="rounded border p-2"
               />
-              {/* {errors.name?.message && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.name?.message}
-                </p>
-              )} */}
             </div>
+
             <div className="mb-6 flex w-full flex-col">
               <label
                 htmlFor="email"
@@ -99,28 +176,14 @@ const RegisterPage = () => {
               <input
                 type="email"
                 id="email"
-                // {...register("email", {
-                //   pattern: {
-                //     value:
-                //       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                //     message: "Enter a valid email",
-                //   },
-                //   required: {
-                //     value: true,
-                //     message: "Email is required",
-                //   },
-                // })}
                 placeholder="Enter email"
-                // className={`placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-4 font-semibold block outline-none border ${
-                //   errors.email ? "border-red-500" : "border-[#c3cad9]"
-                // }`}
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="rounded border p-2"
               />
-              {/* {errors.email?.message && (
-                <p className="mt-1 text-xs text-red-500">
-                  {errors.email?.message}
-                </p>
-              )} */}
             </div>
+
             <div className="mb-6 flex w-full flex-col">
               <label
                 htmlFor="password"
@@ -131,27 +194,14 @@ const RegisterPage = () => {
               <input
                 type="password"
                 id="password"
-                // {...register("password", {
-                //   required: {
-                //     value: true,
-                //     message: "Password is required",
-                //   },
-                //   minLength: {
-                //     value: 6,
-                //     message: "Password length must be at least 6 characters",
-                //   },
-                // })}
                 placeholder="Enter password"
-                // className={`placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-4 font-semibold block outline-none border ${
-                //   errors.password ? "border-red-500" : "border-[#c3cad9]"
-                // }`}
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="rounded border p-2"
               />
-              {/* {errors.password?.message && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.password?.message}
-                </p>
-              )} */}
             </div>
+
             <div className="mb-6 flex w-full flex-col">
               <label
                 htmlFor="confirmPassword"
@@ -162,35 +212,27 @@ const RegisterPage = () => {
               <input
                 type="password"
                 id="confirmPassword"
-                // {...register("confirmPassword", {
-                //   required: {
-                //     value: true,
-                //     message: "Confirm password is required",
-                //   },
-                //   validate: (value) => {
-                //     if (value !== password) {
-                //       return "Passwords do not match";
-                //     }
-                //   },
-                // })}
                 placeholder="Enter confirm password"
-                // className={`placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-4 font-semibold block outline-none border ${
-                //   errors.confirmPassword ? "border-red-500" : "border-[#c3cad9]"
-                // }`}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                className="rounded border p-2"
               />
-              {/* {errors.confirmPassword?.message && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.confirmPassword?.message}
-                </p>
-              )} */}
             </div>
+
+            {error && <p className="mb-4 text-red-500">{error}</p>}
+            {message && <p className="mb-4 text-green-500">{message}</p>}
+
             <button
               type="submit"
-              // disabled={!isValid || isLoading}
-              className="mb-6 w-full rounded-lg bg-primary py-4 px-8 text-lg font-bold text-white disabled:cursor-not-allowed disabled:opacity-70"
+              disabled={isSubmitting}
+              className={`mb-6 w-full rounded-lg bg-primary py-4 px-8 text-lg font-bold text-white ${
+                isSubmitting ? "cursor-not-allowed opacity-70" : ""
+              }`}
             >
-              Register
+              {isSubmitting ? "Registering..." : "Register"}
             </button>
+
             <p className="text-sm font-semibold text-[#5a7184]">
               You have an account?{" "}
               <Link to="/login" className="text-primary">
