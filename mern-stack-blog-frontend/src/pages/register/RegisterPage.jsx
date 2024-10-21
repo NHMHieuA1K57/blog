@@ -1,55 +1,10 @@
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 import MainLayout from "../../components/MainLayout";
 
 const RegisterPage = () => {
-  // const navigate = useNavigate();
-  // const dispatch = useDispatch();
-  // const userState = useSelector((state) => state.user);
-
-  // const { mutate, isLoading } = useMutation({
-  //   mutationFn: ({ name, email, password }) => {
-  //     return signup({ name, email, password });
-  //   },
-  //   onSuccess: (data) => {
-  //     dispatch(userActions.setUserInfo(data));
-  //     localStorage.setItem("account", JSON.stringify(data));
-  //   },
-  //   onError: (error) => {
-  //     toast.error(error.message);
-  //     console.log(error);
-  //   },
-  // });
-
-  // useEffect(() => {
-  //   if (userState.userInfo) {
-  //     navigate("/");
-  //   }
-  // }, [navigate, userState.userInfo]);
-
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors, isValid },
-  //   watch,
-  // } = useForm({
-  //   defaultValues: {
-  //     name: "",
-  //     email: "",
-  //     password: "",
-  //     confirmPassword: "",
-  //   },
-  //   mode: "onChange",
-  // });
-
-  // const submitHandler = (data) => {
-  //   const { name, email, password } = data;
-  //   mutate({ name, email, password });
-  // };
-
-  // const password = watch("password");
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -57,8 +12,6 @@ const RegisterPage = () => {
     confirmPassword: "",
   });
 
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
@@ -70,16 +23,12 @@ const RegisterPage = () => {
   };
 
   const validateEmail = (email) => {
-    // Đơn giản hóa kiểm tra email
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log(formData);
-    setError("");
-    setMessage("");
 
     // Kiểm tra dữ liệu
     if (
@@ -88,22 +37,22 @@ const RegisterPage = () => {
       !formData.password ||
       !formData.confirmPassword
     ) {
-      setError("Please fill in all fields.");
+      toast.error("Please fill in all fields.");
       return;
     }
 
     if (!validateEmail(formData.email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
+      toast.error("Please enter a valid email address.");
       return;
     }
 
     if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters long.");
+      toast.error("Password must be at least 6 characters long.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match.");
       return;
     }
 
@@ -117,8 +66,7 @@ const RegisterPage = () => {
       });
 
       if (response.status === 201 || response.status === 200) {
-        setMessage("Registration successful! You can now login.");
-        setError("");
+        toast.success("Registration successful! You can now login.");
         setFormData({
           name: "",
           email: "",
@@ -126,20 +74,19 @@ const RegisterPage = () => {
           confirmPassword: "",
         });
       } else {
-        setError("Registration failed. Please try again.");
-        setMessage("");
+        toast.error("Registration failed. Please try again.");
       }
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
+        toast.error(err.response.data.message);
       } else {
-        setError("An error occurred. Please try again.");
+        toast.error("An error occurred. Please try again.");
       }
-      setMessage("");
     } finally {
       setIsSubmitting(false);
     }
   };
+
   return (
     <MainLayout>
       <section className="container mx-auto px-5 py-10">
@@ -219,9 +166,6 @@ const RegisterPage = () => {
                 className="rounded border p-2"
               />
             </div>
-
-            {error && <p className="mb-4 text-red-500">{error}</p>}
-            {message && <p className="mb-4 text-green-500">{message}</p>}
 
             <button
               type="submit"
