@@ -2,7 +2,7 @@ const Account = require("../models/account.model");
 const bcrypt = require("bcryptjs");
 
 async function createAccount(req, res, next) {
-  const { name, email, password } = req.body;
+  const { name, email, password , isAdmin} = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({ message: "Vui lòng nhập tất cả các trường" });
   }
@@ -18,6 +18,7 @@ async function createAccount(req, res, next) {
       name,
       email,
       password,
+      isAdmin: isAdmin || false
     });
     const salt = await bcrypt.genSalt(10);
     newAccount.password = await bcrypt.hash(password, salt);

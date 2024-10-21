@@ -1,11 +1,11 @@
 const express = require("express");
 const morgan = require("morgan");
-const logger = require("morgan");
 const bodyParser = require("body-parser");
 const httpErrors = require("http-errors");
 const DB = require("./models/index");
 const accountRoute = require("./routes/account.route");
-
+const postRoute = require('./routes/postRoute');
+const categoryRoute = require('./routes/categoryRoute')
 require("dotenv").config();
 
 // khoi tao web server bang express
@@ -19,8 +19,10 @@ app.use(bodyParser.json());
 app.get("/", async (req, res, next) => {
   res.status(200).json({ message: "Welcome to RESTFul API with NodeJs " });
 });
-app.use("/account", accountRoute);
 
+app.use("/account", accountRoute);
+app.use('/post', postRoute);
+app.use('/cate', categoryRoute);
 // them middleware xu ly loi tren : router , Controller , Model
 app.use(async (req, res, next) => {
   //   next(createError(404,'Không tìm thấy trang '));

@@ -4,23 +4,19 @@ const postSchema = new mongoose.Schema({
   title: {
     type: String,
     required: [true, "Title is required"],
-  },
-  caption: {
-    type: String,
-    required: [true, "Caption is required"],
-  },
-  content: {
-    type: String,
-    required: [true, "Content is required"],
-  },
-  image: {
-    type: String,
+    maxlength: [5000, "Title cannot exceed 5000 characters"]
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
     required: [true, "Category is required"],
   },
+  content: {
+    type: String,
+    required: [true, "Content is required"],
+  },
+  images: [String],
+  
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Account",
