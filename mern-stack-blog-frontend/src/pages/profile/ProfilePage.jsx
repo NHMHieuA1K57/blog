@@ -1,176 +1,181 @@
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import MainLayout from "../../components/MainLayout";
-import { getUserProfile, updateProfile } from "../../services/index/users";
 import ProfilePicture from "../../components/ProfilePicture";
-import { userActions } from "../../store/reducers/userReducers";
 import { toast } from "react-hot-toast";
-import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const queryClient = useQueryClient();
-  const userState = useSelector((state) => state.user);
+  const account = JSON.parse(localStorage.getItem("account"));
+  const token = account?.token;
+  const userId = account?.user?.id;
 
-//   const { data: profileData, isLoading: profileIsLoading } = useQuery({
-//     queryFn: () => {
-//       return getUserProfile({ token: userState.userInfo.token });
-//     },
-//     queryKey: ["profile"],
-//   });
+  useEffect(() => {
+    const account = JSON.parse(localStorage.getItem("account"));
+    const token = account?.token;
+    // Nếu không có token, chuyển hướng đến trang đăng nhập
+    if (!token) {
+      toast.error("Please login to access this page.");
+      navigate("/login"); // Đường dẫn tới trang đăng nhập
+    }
+  }, [navigate]);
+  // Hàm xử lý khi submit form
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-//   const { mutate, isLoading: updateProfileIsLoading } = useMutation({
-//     mutationFn: ({ name, email, password }) => {
-//       return updateProfile({
-//         token: userState.userInfo.token,
-//         userData: { name, email, password },
-//         userId: userState.userInfo._id,
-//       });
-//     },
-//     onSuccess: (data) => {
-//       dispatch(userActions.setUserInfo(data));
-//       localStorage.setItem("account", JSON.stringify(data));
-//       queryClient.invalidateQueries(["profile"]);
-//       toast.success("Profile is updated");
-//     },
-//     onError: (error) => {
-//       toast.error(error.message);
-//       console.log(error);
-//     },
-//   });
+    // Kiểm tra nếu không có thay đổi nào được thực hiện
+    if (!name && !password) {
+      toast("You have not made any changes!", {
+        icon: "⚠️",
+        style: {
+          border: "1px solid #FFA500",
+          padding: "16px",
+          color: "#FFA500",
+        },
+      });
+      setLoading(false);
+      return;
+    }
+    // Nếu có nhập mật khẩu nhưng thiếu confirm password hoặc không khớp
+    if (password.length > 0 || confirmPassword.length > 0) {
+      // Kiểm tra độ dài mật khẩu
+      if (password.length < 6) {
+        toast.error("Password must be at least 6 characters long.");
+        setLoading(false);
+        return;
+      }
 
-//   useEffect(() => {
-//     if (!userState.userInfo) {
-//       navigate("/");
-//     }
-//   }, [navigate, userState.userInfo]);
+      // Kiểm tra confirm password có khớp với password không
+      if (password !== confirmPassword) {
+        toast.error("Passwords do not match. Please try again.");
+        setLoading(false);
+        return;
+      }
+    }
 
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors, isValid },
-//   } = useForm({
-//     defaultValues: {
-//       name: "",
-//       email: "",
-//       password: "",
-//     },
-//     values: useMemo(() => {
-//       return {
-//         name: profileIsLoading ? "" : profileData.name,
-//         email: profileIsLoading ? "" : profileData.email,
-//       };
-//     }, [profileData?.email, profileData?.name, profileIsLoading]),
-//     mode: "onChange",
-//   });
+    try {
+      // Tạo object chứa dữ liệu cần cập nhật
+      const updateData = {};
 
-  const submitHandler = (data) => {
-    // const { name, email, password } = data;
-    // mutate({ name, email, password });
+      if (name) {
+        updateData.name = name;
+      }
+      if (password) {
+        updateData.password = password;
+      }
+
+      // Gọi API với phương thức PUT hoặc PATCH
+      const response = await axios.patch(
+        `http://localhost:9999/account/api/updateProfile/${userId}`,
+        updateData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Gửi token trong header
+          },
+        }
+      );
+
+      // Xử lý phản hồi thành công
+      console.log("Profile updated successfully:", response.data);
+
+      // Cập nhật localStorage với tên mới nếu cần
+      if (name) {
+        localStorage.setItem(
+          "account",
+          JSON.stringify({
+            ...account,
+            user: {
+              ...account.user,
+              username: name,
+            },
+          })
+        );
+      }
+
+      // Thông báo thành công
+      toast.success(response.data.message);
+    } catch (error) {
+      // Xử lý lỗi khi gọi API
+      if (error.response) {
+        // Lỗi trả về từ server
+        console.error("Error updating profile:", error.response.data);
+        toast.error(error.response.data.message);
+      } else {
+        // Lỗi khác (như mất kết nối mạng)
+        console.error("Error updating profile:", error);
+        toast.error("Failed to update profile. Please try again.");
+      }
+    } finally {
+      setLoading(false); // Dừng trạng thái loading
+    }
   };
 
   return (
     <MainLayout>
       <section className="container mx-auto px-5 py-10">
-        <div className="w-full max-w-sm mx-auto">
+        <div className="mx-auto w-full max-w-sm">
           <ProfilePicture />
           <form onSubmit={submitHandler}>
-            <div className="flex flex-col mb-6 w-full">
+            <div className="mb-6 flex w-full flex-col">
               <label
                 htmlFor="name"
-                className="text-[#5a7184] font-semibold block"
+                className="block font-semibold text-[#5a7184]"
               >
                 Name
               </label>
               <input
                 type="text"
                 id="name"
-                // {...register("name", {
-                //   minLength: {
-                //     value: 1,
-                //     message: "Name length must be at least 1 character",
-                //   },
-                //   required: {
-                //     value: true,
-                //     message: "Name is required",
-                //   },
-                // })}
-                // placeholder="Enter name"
-                // className={`placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-4 font-semibold block outline-none border ${
-                //   errors.name ? "border-red-500" : "border-[#c3cad9]"
-                // }`}
+                placeholder="Enter new name"
+                defaultValue={account?.user?.username}
+                onChange={(e) => setName(e.target.value)}
               />
-              {/* {errors.name?.message && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.name?.message}
-                </p>
-              )} */}
             </div>
-            <div className="flex flex-col mb-6 w-full">
-              <label
-                htmlFor="email"
-                className="text-[#5a7184] font-semibold block"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                // {...register("email", {
-                //   pattern: {
-                //     value:
-                //       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                //     message: "Enter a valid email",
-                //   },
-                //   required: {
-                //     value: true,
-                //     message: "Email is required",
-                //   },
-                // })}
-                placeholder="Enter email"
-                // className={`placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-4 font-semibold block outline-none border ${
-                //   errors.email ? "border-red-500" : "border-[#c3cad9]"
-                // }`}
-              />
-              {/* {errors.email?.message && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.email?.message}
-                </p>
-              )} */}
-            </div>
-            <div className="flex flex-col mb-6 w-full">
+
+            <div className="mb-6 flex w-full flex-col">
               <label
                 htmlFor="password"
-                className="text-[#5a7184] font-semibold block"
+                className="block font-semibold text-[#5a7184]"
               >
                 New Password (optional)
               </label>
               <input
                 type="password"
                 id="password"
-                // {...register("password")}
-                // placeholder="Enter new password"
-                // className={`placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-4 font-semibold block outline-none border ${
-                //   errors.password ? "border-red-500" : "border-[#c3cad9]"
-                // }`}
+                placeholder="Enter new password"
+                value={password || ""}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              {/* {errors.password?.message && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.password?.message}
-                </p>
-              )} */}
             </div>
+            <div className="mb-6 flex w-full flex-col">
+              <label
+                htmlFor="password"
+                className="block font-semibold text-[#5a7184]"
+              >
+                Confirm New Password
+              </label>
+              <input
+                type="password"
+                id="cf_password"
+                placeholder="Enter new password"
+                value={confirmPassword || ""}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
+
             <button
               type="submit"
-            //   disabled={!isValid || profileIsLoading || updateProfileIsLoading}
-              className="bg-primary text-white font-bold text-lg py-4 px-8 w-full rounded-lg mb-6 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="mb-6 w-full rounded-lg bg-primary py-4 px-8 text-lg font-bold text-white disabled:cursor-not-allowed disabled:opacity-70"
+              disabled={loading} // Vô hiệu hóa nút khi đang loading
             >
-              Update
+              {loading ? "Updating..." : "Update"}{" "}
+              {/* Thay đổi text khi loading */}
             </button>
           </form>
         </div>
