@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const logger = require("morgan");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const httpErrors = require("http-errors");
 const DB = require("./models/index");
@@ -14,6 +15,7 @@ const app = express();
 // them cac middleware vao web server
 app.use(morgan("dev"));
 app.use(bodyParser.json());
+app.use(cors());
 
 // thuc hien tiep nhan request tu client bang get
 app.get("/", async (req, res, next) => {
