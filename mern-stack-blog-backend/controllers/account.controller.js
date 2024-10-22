@@ -57,7 +57,7 @@ async function loginAccount(req, res, next) {
 
     // Tạo token (JWT) cho tài khoản
     const token = jwt.sign(
-      { id: account._id, email: account.email }, // Payload chứa thông tin người dùng
+      { id: account._id, email: account.email,isAdmin:account.isAdmin, isBan : account.isBan }, // Payload chứa thông tin người dùng
       process.env.JWT_SECRET, // Secret key từ biến môi trường
       { expiresIn: "1h" } // Token sẽ hết hạn sau 1 giờ
     );
@@ -69,7 +69,9 @@ async function loginAccount(req, res, next) {
       user: {
         id: account._id,
         email: account.email,
-        username: account.name,
+        name: account.name,
+        role: account.isAdmin ? "Admin" : "User",
+        status : account.isBan ? "Ban" : "Active",
       },
     });
   } catch (error) {
