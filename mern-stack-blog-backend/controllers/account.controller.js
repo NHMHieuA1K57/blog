@@ -77,5 +77,30 @@ async function loginAccount(req, res, next) {
     res.status(500).json({ message: "An error occurred during login." });
   }
 }
-const AccountController = { createAccount, loginAccount };
+
+async function updateProfile(req, res, next) {
+  try {
+    const { name, password } = req.body;
+    const account = await Account.findById(req.user.id); // Sử dụng req.user.id
+
+    if (!account) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+
+    if (name) {
+      account.name = name;
+    }
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      account.password = await bcrypt.hash(password, salt);
+    }
+
+    await account.save();
+    res.status(200).json({ message: "Update profile success", data: account });
+  } catch (error) {
+    next(error);
+  }
+}
+
+const AccountController = { createAccount, loginAccount ,updateProfile};
 module.exports = AccountController;
