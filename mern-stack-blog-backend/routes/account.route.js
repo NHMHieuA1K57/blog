@@ -2,8 +2,7 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const Account = require("../models/account.model");
 const {AccountController} = require("../controllers");
-const { default: mongoose } = require("mongoose");
-const authenticationToken = require("../authMiddleware/authenticationToken");
+const {authenticationToken,authorizeAdmin} = require("../authMiddleware/authenticationToken");
 
 const accountRoute = express.Router();
 accountRoute.use(bodyParser.json());

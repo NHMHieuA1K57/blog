@@ -24,5 +24,13 @@ const authenticationToken = (req, res, next) => {
     return res.status(403).json({ message: "Invalid token." });
   }
 };
-
-module.exports = authenticationToken;
+// Middleware kiểm tra quyền admin
+const authorizeAdmin = (req, res, next) => {
+  // Kiểm tra xem user có phải là admin hay không
+  if (req.user && req.user.isAdmin) {
+    next(); // Nếu là admin, cho phép tiếp tục
+  } else {
+    return res.status(403).json({ message: "Access denied. Admins only." });
+  }
+};
+module.exports = { authenticationToken, authorizeAdmin };
