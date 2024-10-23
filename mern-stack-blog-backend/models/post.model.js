@@ -16,12 +16,11 @@ const postSchema = new mongoose.Schema({
     required: [true, "Content is required"],
   },
   images: [String],
-  
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Account",
     required: [true, "Author is required"],
-  },
+  }, 
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,

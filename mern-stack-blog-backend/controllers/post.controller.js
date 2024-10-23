@@ -1,11 +1,12 @@
-const cloudinary = require('../Config/cloudinaryConfig');
+const {uploadToCloudinary} = require('../config/cloudinaryConfig');
 const Post = require('../models/post.model');
-const Category = require('../models/category.model'); // Đảm bảo đã import model Category
+const Category = require('../models/category.model');
 
 async function createPost(req, res, next) {
-  const { title, content, category ,author} = req.body;
+  console.log(req.user);  
+  const { title, content, category } = req.body;
 
-  if (!title || !content || !category || !author) {
+  if (!title || !content || !category) {
     return res.status(400).json({ message: "Vui lòng nhập tất cả các trường bắt buộc" });
   }
 
@@ -14,46 +15,28 @@ async function createPost(req, res, next) {
   }
 
   try {
-    const uploadPromises = req.files.map(file => {
-      return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          { resource_type: 'auto' },
-          (error, result) => {
-            if (error) {
-              return reject(new Error('Lỗi khi upload ảnh lên Cloudinary'));
-            }
-            resolve(result.secure_url);
-          }
-        );
-        uploadStream.end(file.buffer);
-      });
-    });
-
+    const uploadPromises = req.files.map(file => uploadToCloudinary(file.buffer, 'SDN302'));
     const images = await Promise.all(uploadPromises);
 
-    // Tìm danh mục theo ID
     const categoryData = await Category.findById(category);
     if (!categoryData) {
       return res.status(404).json({ message: "Danh mục không tồn tại" });
     }
-
-    // Tạo bài viết mới
+    console.log('Author ID:', req.user._id);
     const newPost = new Post({
       title,
-      category: categoryData._id, 
+      category: categoryData._id,
       content,
-      images: images,
-      author: author,
+      images,
+      author: req.user._id,  // Đảm bảo giá trị này tồn tại
     });
 
-    await newPost.save();
-
+    await newPost.save();  
     res.status(201).json({
       message: 'Tạo bài viết thành công',
       post: {
         id: newPost._id,
         title: newPost.title,
-        caption: newPost.caption,
         content: newPost.content,
         images: newPost.images,
         category: {
@@ -61,7 +44,8 @@ async function createPost(req, res, next) {
           name: categoryData.name,
         },
         author: {
-          id: newPost.author
+          id: req.user._id, 
+          name: req.user.name, 
         },
         createdAt: newPost.createdAt,
       },
@@ -72,82 +56,81 @@ async function createPost(req, res, next) {
 }
 
 async function updatePost(req, res, next) {
-  const { title, caption, content, category } = req.body;
-  const postId = req.params.postId;
+  const { title, content, category } = req.body;
+  const postId = req.params.id;
 
-  if (!title || !caption || !content || !category) {
-    return res.status(400).json({ message: "Vui lòng nhập tất cả các trường" });
+  if (!title || !content || !category) {
+    return res.status(400).json({ message: "Please fill in all required fields" });
   }
 
   try {
     const post = await Post.findById(postId);
     if (!post) {
-      return res.status(404).json({ message: "Không tìm thấy bài viết" });
+      return res.status(404).json({ message: "Post not found." });
     }
 
-    if (post.author.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Bạn không có quyền cập nhật bài viết này" });
-    }
-
-
-    post.title = title;
-    post.caption = caption;
-    post.content = content;
-    post.category = category;
-
-
+    let images = post.images;
     if (req.files && req.files.length > 0) {
-      const uploadPromises = req.files.map(file => {
-        return new Promise((resolve, reject) => {
-          const uploadStream = cloudinary.uploader.upload_stream(
-            { resource_type: 'auto' },
-            (error, result) => {
-              if (error) {
-                return reject(new Error('Lỗi khi upload ảnh lên Cloudinary'));
-              }
-              resolve(result.secure_url);
-            }
-          );
-          uploadStream.end(file.buffer);
-        });
-      });
-      const images = await Promise.all(uploadPromises);
-      post.images = images;
+      const uploadPromises = req.files.map(file => uploadToCloudinary(file.buffer, 'SDN302'));
+      images = await Promise.all(uploadPromises);
     }
+
+    const categoryData = await Category.findById(category);
+    if (!categoryData) {
+      return res.status(404).json({ message: "Category not found." });
+    }
+    post.title = title;
+    post.content = content;
+    post.category = categoryData._id;
+    post.images = images;
+    post.updatedAt = Date.now();
 
     await post.save();
-    res.status(200).json({ message: "Cập nhật bài viết thành công", post });
+
+    res.status(200).json({
+      message: 'Post updated successfully',
+      post: {
+        id: post._id,
+        title: post.title,
+        content: post.content,
+        images: post.images,
+        category: {
+          id: categoryData._id,
+          name: categoryData.name,
+        },
+        author: {
+          id: post.author,
+          name: req.user.name, 
+        },
+        updatedAt: post.updatedAt,
+      },
+    });
   } catch (error) {
     next(error);
   }
 }
 
 
-async function deletePost(req, res, next) {
-  const postId = req.params.postId;
+const deletePost = async (req, res) => {
+  const { id } = req.params; 
 
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findByIdAndDelete(id);
+
     if (!post) {
-      return res.status(404).json({ message: "Không tìm thấy bài viết" });
+      return res.status(404).json({ message: "Không tìm thấy bài viết để xóa" });
     }
 
-    if (post.author.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Bạn không có quyền xóa bài viết này" });
-    }
-
-    await Post.findByIdAndDelete(postId);
-    res.status(200).json({ message: "Xóa bài viết thành công" });
+    res.status(200).json({ message: "Bài viết đã được xóa thành công" });
   } catch (error) {
-    next(error);
+    res.status(500).json({ message: "Lỗi khi xóa bài viết", error: error.message });
   }
-}
+};
 
-async function getPostById(req, res, next) {
-  const postId = req.params.postId;
-
+async function detailPost(req, res, next) {
+  const { id } = req.params; 
   try {
-    const post = await Post.findById(postId)
+    const post = await Post.findById(id)
       .populate("author", "name email")
       .populate("category", "name")
       .populate("comments");
@@ -156,14 +139,24 @@ async function getPostById(req, res, next) {
       return res.status(404).json({ message: "Không tìm thấy bài viết" });
     }
 
-    res.status(200).json(post);
+    res.status(200).json({
+      message: "Chi tiết bài viết",
+      post: {
+        id: post._id,
+        title: post.title,
+        content: post.content,
+        category: post.category.name,
+        images: post.images,
+        comments: post.comments
+      }
+    });
   } catch (error) {
     next(error);
   }
 }
 
 
-async function listPosts(req, res, next) {
+async function listPost(req, res, next) {
   try {
     const posts = await Post.find()
       .populate("author", "name email")
@@ -183,7 +176,7 @@ const PostController =
   createPost,
   updatePost,
   deletePost,
-  getPostById,
-  listPosts,
+  detailPost,
+  listPost,
 };
 module.exports = PostController;
