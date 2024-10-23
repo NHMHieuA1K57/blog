@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const httpErrors = require("http-errors");
 const DB = require("./models/index");
 const accountRoute = require("./routes/account.route");
+const commentRoute = require("./routes/comment.route");
 
 require("dotenv").config();
 
@@ -22,6 +23,7 @@ app.get("/", async (req, res, next) => {
   res.status(200).json({ message: "Welcome to RESTFul API with NodeJs " });
 });
 app.use("/account", accountRoute);
+app.use("/comment", commentRoute);
 
 // them middleware xu ly loi tren : router , Controller , Model
 app.use(async (req, res, next) => {
