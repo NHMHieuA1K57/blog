@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { images } from "../../../../constants";
 import { comments } from "../../../../constants/dataMock";
 import DataTable from "../../components/DataTable";
+import { MdDelete } from "react-icons/md";
 
-const Comments = () => {
+const Reports = () => {
   // const {
   //   userState,
   //   currentPage,
@@ -52,18 +53,18 @@ const Comments = () => {
 
   return (
     <DataTable
-      pageTitle="Manage Comments"
-      dataListName="Comments"
-      searchInputPlaceHolder="Search Comments..."
+      pageTitle="Manage Reports"
+      dataListName="Reports"
+      searchInputPlaceHolder="Search Report..."
       // searchKeywordOnSubmitHandler={submitSearchKeywordHandler}
       // searchKeywordOnChangeHandler={searchKeywordHandler}
       // searchKeyword={searchKeyword}
       tableHeaderTitleList={[
-        "Author",
-        "Comment",
-        "In Respond to",
+        "Name",
+        "Content",
+        "In report to comment",
         "Created At",
-        "",
+        "Action",
       ]}
       // isFetching={isFetching}
       // isLoading={isLoading}
@@ -73,8 +74,8 @@ const Comments = () => {
       // headers={commentsData?.headers}
     >
       {comments.map((comment, index) => (
-        <tr>
-          <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm" key={index}>
+        <tr key={index}>
+          <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <a href="/" className="relative block">
@@ -109,7 +110,8 @@ const Comments = () => {
           <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
             <p className="whitespace-no-wrap text-gray-900">
               <Link
-                to={`/blog/${comment?.post?.slug}`}
+                // to={`/blog/${comment?.post?.slug}`}
+                to={`/blog/123`}
                 className="text-blue-500"
               >
                 {comment?.post?.title}
@@ -147,17 +149,10 @@ const Comments = () => {
               {comment?.check ? "Unapprove" : "Approve"}
             </button> */}
             <button
-              // disabled={isLoadingDeleteData}
               type="button"
-              className="text-red-600 hover:text-red-900 disabled:cursor-not-allowed disabled:opacity-70"
-              // onClick={() => {
-              //   deleteDataHandler({
-              //     slug: comment?._id,
-              //     token: userState.userInfo.token,
-              //   });
-              // }}
+              className=" disabled:cursor-not-allowed disabled:opacity-70"
             >
-              Delete
+              <MdDelete color="red" fontSize={25} />
             </button>
           </td>
           {/* <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
@@ -216,4 +211,4 @@ const Comments = () => {
   );
 };
 
-export default Comments;
+export default Reports;

@@ -15,7 +15,7 @@ const Hero = () => {
           dõi, nhưng đồng thời sẽ có rất nhiều công việc và đau đớn.
         </p>
         <Search className="mt-10 lg:mt-6 xl:mt-10" />
-        <div className="mt-4 flex flex-col lg:mt-7 lg:flex-row lg:flex-nowrap lg:items-start lg:gap-x-4">
+        {/* <div className="mt-4 flex flex-col lg:mt-7 lg:flex-row lg:flex-nowrap lg:items-start lg:gap-x-4">
           <span className="mt-2 font-semibold italic text-dark-light lg:mt-4 lg:text-sm xl:text-base">
             Popular Tags:
           </span>
@@ -30,7 +30,7 @@ const Hero = () => {
               User Interfaces
             </li>
           </ul>
-        </div>
+        </div> */}
       </div>
       <div className="lg:1/2 hidden lg:block">
         <img

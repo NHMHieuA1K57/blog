@@ -152,13 +152,13 @@ const Header = () => {
                       >
                         Profile Page
                       </button>
-                      <button
+                      {/* <button
                         onClick={() => navigate("/manageBlog")}
                         type="button"
                         className="hover:bg-dark-hard hover:text-white px-4 py-2 text-white lg:text-dark-soft"
                       >
                         Manage Blog
-                      </button>
+                      </button> */}
                       <button
                         onClick={logoutHandler}
                         type="button"
