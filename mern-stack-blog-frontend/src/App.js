@@ -3,20 +3,19 @@ import { Route, Routes } from "react-router-dom";
 
 import "./App.css";
 import Admin from "./pages//admin/screens/Admin";
+import AboutUs from "./pages/aboutUs/AboutUs";
 import AdminLayout from "./pages/admin/AdminLayout";
 import Categories from "./pages/admin/screens/categories/Categories";
-import Comments from "./pages/admin/screens/comments/Comments";
+import ManagePosts from "./pages/admin/screens/posts/ManagePosts";
+import Reports from "./pages/admin/screens/reports/Reports";
 import Users from "./pages/admin/screens/users/Users";
 import ArticleDetailPage from "./pages/articleDetail/ArticleDetailPage";
 import BlogPage from "./pages/blog/BlogPage";
-import BlogPostForm from "./pages/blogOwn/addNewBlog";
-import ManageBlog from "./pages/blogOwn/ManageBlog";
 import HomePage from "./pages/home/HomePage";
 import LoginPage from "./pages/login/LoginPage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import RegisterPage from "./pages/register/RegisterPage";
-import AboutUs from "./pages/aboutUs/AboutUs";
-import ManagePosts from "./pages/admin/screens/posts/ManagePosts";
+import BlogPostForm from "./pages/admin/screens/posts/addNewBlog";
 function App() {
   return (
     <div className="App font-opensans">
@@ -27,12 +26,11 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/manageBlog" element={<ManageBlog />} />
         <Route path="/addNewBlog" element={<BlogPostForm />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Admin />} />
-          <Route path="comments" element={<Comments />} />
+          <Route path="reports" element={<Reports />} />
           <Route path="posts/manage" element={<ManagePosts />} />
           {/* <Route path="posts/manage/edit/:slug" element={<EditPost />} /> */}
           <Route path="categories/manage" element={<Categories />} />

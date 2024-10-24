@@ -160,6 +160,7 @@ export const users = [
     isAuthor: true,
     actions: "",
     totalPost: 10,
+    isBan: true,
     posts: [
       {
         _id: "101",
@@ -186,6 +187,7 @@ export const users = [
     isAuthor: false,
     actions: "",
     totalPost: 5,
+    isBan: false,
     posts: [
       {
         _id: "103",
@@ -206,6 +208,7 @@ export const users = [
     isAuthor: true,
     actions: "",
     totalPost: 8,
+    isBan: true,
     posts: [
       {
         _id: "104",
@@ -226,6 +229,7 @@ export const users = [
     isAuthor: false,
     actions: "",
     totalPost: 3,
+    isBan: false,
     posts: [
       {
         _id: "105",
@@ -246,6 +250,7 @@ export const users = [
     isAuthor: true,
     actions: "",
     totalPost: 12,
+    isBan: false,
     posts: [
       {
         _id: "106",

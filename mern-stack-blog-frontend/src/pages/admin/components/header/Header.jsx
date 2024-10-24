@@ -93,10 +93,10 @@ const Header = () => {
                 setActiveNavName={setActiveNavName}
               />
               <NavItem
-                title="Comments"
-                link="/admin/comments"
+                title="Reports"
+                link="/admin/reports"
                 icon={<FaComments className="text-xl" />}
-                name="comments"
+                name="reports"
                 activeNavName={activeNavName}
                 setActiveNavName={setActiveNavName}
               />

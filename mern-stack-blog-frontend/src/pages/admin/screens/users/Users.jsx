@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { images } from "../../../../constants";
 import { users } from "../../../../constants/dataMock";
 import DataTable from "../../components/DataTable";
+import { MdDelete } from "react-icons/md";
+import { FaBan } from "react-icons/fa";
+
 
 const Users = () => {
   // const {
@@ -73,10 +76,8 @@ const Users = () => {
         "Name",
         "Email",
         "Created At",
-        "Total Post",
-        "is Editor",
-        "is Author",
-        "",
+        "Total Report",
+        "Action",
       ]}
       // isLoading={isLoading}
       // isFetching={isFetching}
@@ -113,38 +114,21 @@ const Users = () => {
           <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
             <p className="whitespace-no-wrap text-gray-900">{user.totalPost}</p>
           </td>
-          <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-            <input
-              type="checkbox"
-              className="d-checkbox bg-cover checked:bg-[url('../public/images/check.png')] disabled:bg-orange-400 disabled:opacity-100 checked:disabled:bg-none"
-              defaultChecked={user.isEditor}
-              // onChange={(event) => handleAdminCheck(event, user._id)}
-              // disabled={isLoadingUpdateUser}
-            />
-          </td>
-          <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-            <input
-              type="checkbox"
-              className="d-checkbox bg-cover checked:bg-[url('../public/images/check.png')] disabled:bg-orange-400 disabled:opacity-100 checked:disabled:bg-none"
-              defaultChecked={user.isAuthor}
-              // onChange={(event) => handleAdminCheck(event, user._id)}
-              // disabled={isLoadingUpdateUser}
-            />
-          </td>
           <td className="space-x-5 border-b border-gray-200 bg-white px-5 py-5 text-sm">
             <button
-              // disabled={isLoadingDeleteData}
               type="button"
-              className="text-red-600 hover:text-red-900 disabled:cursor-not-allowed disabled:opacity-70"
-              // onClick={() => {
-              //   deleteDataHandler({
-              //     slug: user?._id,
-              //     token: userState.userInfo.token,
-              //   });
-              // }}
+              className=" disabled:cursor-not-allowed disabled:opacity-70"
             >
-              Delete
+              <MdDelete color="red" fontSize={25}/>
             </button>
+            {user.totalPost >= 5 && (
+              <button
+                type="button"
+                className=" disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                <FaBan color="yellow" fontSize={25}/>
+              </button>
+            )}
           </td>
         </tr>
       ))}

@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { categories } from "../../../../constants/dataMock";
 import DataTable from "../../components/DataTable";
+import { MdDelete, MdEdit } from "react-icons/md";
 
 const Categories = () => {
   const [categoryTitle, setCategoryTitle] = useState("");
   const [categoryList, setCategoryList] = useState(categories);
+  const navigate = useNavigate();
 
   const handleCreateCategory = () => {
     const newCategory = {
@@ -22,17 +24,17 @@ const Categories = () => {
     <div className="grid grid-cols-12 gap-x-4">
       <div className="col-span-4 py-8">
         <h4 className="text-lg leading-tight">Add New Category</h4>
-        <div className="d-form-control w-full mt-6">
+        <div className="d-form-control mt-6 w-full">
           <input
             value={categoryTitle}
-            className="d-input d-input-bordered border-slate-300 !outline-slate-300 text-xl font-medium font-roboto text-dark-hard"
+            className="d-input-bordered d-input border-slate-300 font-roboto text-xl font-medium text-dark-hard !outline-slate-300"
             onChange={(e) => setCategoryTitle(e.target.value)}
             placeholder="Category title"
           />
           <button
             type="button"
             onClick={handleCreateCategory}
-            className="w-fit mt-3 bg-green-500 text-white font-semibold rounded-lg px-4 py-2"
+            className="mt-3 w-fit rounded-lg bg-green-500 px-4 py-2 font-semibold text-white"
           >
             Add Category
           </button>
@@ -48,30 +50,25 @@ const Categories = () => {
         >
           {categoryList.map((category, index) => (
             <tr key={index}>
-              <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
+              <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div className="flex items-center">
-                  <p className="text-gray-900 whitespace-no-wrap">
+                  <p className="whitespace-no-wrap text-gray-900">
                     {category.title}
                   </p>
                 </div>
               </td>
-              <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                <p className="text-gray-900 whitespace-no-wrap">
+              <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                <p className="whitespace-no-wrap text-gray-900">
                   {category.createAt}
                 </p>
               </td>
-              <td className="px-5 py-5 text-sm bg-white border-b border-gray-200 space-x-5">
+              <td className="space-x-5 border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <button
                   type="button"
-                  className="text-red-600 hover:text-red-900"
+                  className=" disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  Delete
+                  <MdDelete color="red" fontSize={25} />
                 </button>
-                <Link
-                  className="text-green-600 hover:text-green-900"
-                >
-                  Edit
-                </Link>
               </td>
             </tr>
           ))}

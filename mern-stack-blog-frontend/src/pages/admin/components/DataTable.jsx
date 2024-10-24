@@ -1,4 +1,6 @@
+import { IoIosAddCircle } from "react-icons/io";
 import Pagination from "../../../components/Pagination";
+import { useNavigate } from "react-router-dom";
 
 const DataTable = ({
   pageTitle,
@@ -15,32 +17,42 @@ const DataTable = ({
   setCurrentPage,
   currentPage,
   headers,
+  type,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <div>
       <h1 className="text-2xl font-semibold">{pageTitle}</h1>
 
-      <div className="w-full px-4 mx-auto">
+      <div className="mx-auto w-full px-4">
         <div className="py-8">
-          <div className="flex flex-row justify-between w-full mb-1 sm:mb-0">
+          <div className="mb-1 flex w-full flex-row justify-between sm:mb-0">
             <h2 className="text-2xl leading-tight">{dataListName}</h2>
+            {type === "posts" && (
+              <IoIosAddCircle
+                color="red"
+                className="ml-3 cursor-pointer text-5xl"
+                onClick={() => navigate("/addNewBlog")}
+              />
+            )}
             <div className="text-end">
               <form
                 onSubmit={searchKeywordOnSubmitHandler}
-                className="flex flex-col justify-center w-3/4 max-w-sm space-y-3 md:flex-row md:w-full md:space-x-3 md:space-y-0"
+                className="flex w-3/4 max-w-sm flex-col justify-center space-y-3 md:w-full md:flex-row md:space-x-3 md:space-y-0"
               >
                 <div className=" relative ">
                   <input
                     type="text"
                     id='"form-subscribe-Filter'
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    className=" w-full flex-1 appearance-none rounded-lg border border-transparent border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 shadow-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600"
                     placeholder={searchInputPlaceHolder}
                     onChange={searchKeywordOnChangeHandler}
                     value={searchKeyword}
                   />
                 </div>
                 <button
-                  className="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200"
+                  className="flex-shrink-0 rounded-lg bg-purple-600 px-4 py-2 text-base font-semibold text-white shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200"
                   type="submit"
                 >
                   Filter
@@ -48,7 +60,7 @@ const DataTable = ({
               </form>
             </div>
           </div>
-          <div className="px-4 py-4 -mx-4 overflow-x-auto sm:-mx-8 sm:px-8">
+          <div className="-mx-4 overflow-x-auto px-4 py-4 sm:-mx-8 sm:px-8">
             <div className="inline-block min-w-full overflow-hidden rounded-lg shadow">
               <table className="min-w-full leading-normal">
                 <thead>
@@ -57,7 +69,7 @@ const DataTable = ({
                       <th
                         key={index}
                         scope="col"
-                        className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200"
+                        className="border-b border-gray-200 bg-white px-5 py-3 text-left text-sm font-normal uppercase text-gray-800"
                       >
                         {title}
                       </th>
@@ -67,13 +79,13 @@ const DataTable = ({
                 <tbody>
                   {isLoading || isFetching ? (
                     <tr>
-                      <td colSpan={5} className="text-center py-10 w-full">
+                      <td colSpan={5} className="w-full py-10 text-center">
                         Loading...
                       </td>
                     </tr>
                   ) : data?.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="text-center py-10 w-full">
+                      <td colSpan={5} className="w-full py-10 text-center">
                         No records found
                       </td>
                     </tr>
