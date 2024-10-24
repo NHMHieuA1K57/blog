@@ -3,17 +3,13 @@ const Post = require('../models/post.model');
 const Category = require('../models/category.model');
 
 async function createPost(req, res, next) {
-  console.log(req.user);  
   const { title, content, category } = req.body;
-
   if (!title || !content || !category) {
     return res.status(400).json({ message: "Vui lòng nhập tất cả các trường bắt buộc" });
   }
-
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ message: 'Không có file ảnh nào được upload.' });
   }
-
   try {
     const uploadPromises = req.files.map(file => uploadToCloudinary(file.buffer, 'SDN302'));
     const images = await Promise.all(uploadPromises);
@@ -22,13 +18,12 @@ async function createPost(req, res, next) {
     if (!categoryData) {
       return res.status(404).json({ message: "Danh mục không tồn tại" });
     }
-    console.log('Author ID:', req.user._id);
     const newPost = new Post({
       title,
       category: categoryData._id,
       content,
       images,
-      author: req.user._id,  // Đảm bảo giá trị này tồn tại
+      author: req.user._id, 
     });
 
     await newPost.save();  
