@@ -1,7 +1,8 @@
 const Account = require("../models/account.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+const nodemailer = require('nodemailer');
+require('dotenv').config();
 async function createAccount(req, res, next) {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {

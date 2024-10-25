@@ -5,10 +5,6 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: [true, "Title is required"],
   },
-  caption: {
-    type: String,
-    required: [true, "Caption is required"],
-  },
   content: {
     type: String,
     required: [true, "Content is required"],
