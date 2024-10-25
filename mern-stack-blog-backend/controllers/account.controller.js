@@ -65,9 +65,8 @@ async function loginAccount(req, res, next) {
     // Gửi phản hồi thành công với token và thông tin tài khoản
     res.status(200).json({
       message: "Login successful!",
-      token, // Gửi token về cho client
+      token,
       user: {
-        id: account._id,
         email: account.email,
         name: account.name,
         role: account.isAdmin ? "Admin" : "User",

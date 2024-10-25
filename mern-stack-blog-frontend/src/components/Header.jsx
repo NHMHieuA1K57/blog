@@ -80,7 +80,6 @@ const Header = () => {
   const [navIsVisible, setNavIsVisible] = useState(false);
   const userState = useSelector((state) => state.user);
   const [profileDrowpdown, setProfileDrowpdown] = useState(false);
-  const admin = false;
 
   const navVisibilityHandler = () => {
     setNavIsVisible((curState) => {
@@ -135,7 +134,7 @@ const Header = () => {
                     } lg:hidden transition-all duration-500 pt-4 lg:absolute lg:bottom-0 lg:right-0 lg:transform lg:translate-y-full lg:group-hover:block w-max`}
                   >
                     <ul className="bg-dark-soft lg:bg-transparent text-center flex flex-col shadow-lg rounded-lg overflow-hidden">
-                      {admin && (
+                      {userState.userInfo.user.role == 'Admin' && (
                         <button
                           onClick={() => navigate("/admin")}
                           type="button"
@@ -152,13 +151,6 @@ const Header = () => {
                       >
                         Profile Page
                       </button>
-                      {/* <button
-                        onClick={() => navigate("/manageBlog")}
-                        type="button"
-                        className="hover:bg-dark-hard hover:text-white px-4 py-2 text-white lg:text-dark-soft"
-                      >
-                        Manage Blog
-                      </button> */}
                       <button
                         onClick={logoutHandler}
                         type="button"
