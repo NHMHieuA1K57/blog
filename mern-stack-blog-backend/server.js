@@ -6,7 +6,12 @@ const bodyParser = require("body-parser");
 const httpErrors = require("http-errors");
 const DB = require("./models/index");
 const accountRoute = require("./routes/account.route");
+<<<<<<< Updated upstream
 
+=======
+const commentRoute = require("./routes/comment.route");
+const reportRoute = require("./routes/report.routes");
+>>>>>>> Stashed changes
 require("dotenv").config();
 
 // khoi tao web server bang express
@@ -21,6 +26,7 @@ app.use(cors());
 app.get("/", async (req, res, next) => {
   res.status(200).json({ message: "Welcome to RESTFul API with NodeJs " });
 });
+app.use("report", reportRoute)
 app.use("/account", accountRoute);
 
 // them middleware xu ly loi tren : router , Controller , Model
@@ -29,9 +35,9 @@ app.use(async (req, res, next) => {
   next(httpErrors.BadRequest("Bad Request "));
 });
 
- // kiem soat loi bat ki trong web server
- app.use(async (err, req, res, next) => {
-    //lay status code thuc te dang gap phai
+// kiem soat loi bat ki trong web server
+app.use(async (err, req, res, next) => {
+  //lay status code thuc te dang gap phai
   res.status(err.status || 500);
   res.json({
     status: err.status,
@@ -42,8 +48,7 @@ app.use(async (req, res, next) => {
 
 const HOST = process.env.HOST_NAME || "localhost";
 const PORT = process.env.PORT || 9999;
-app.listen(PORT, HOST , async() => {
-    console.log(`Server running at http://${HOST}:${PORT}`);
-    await DB.connectDB();
-  });
-  
+app.listen(PORT, HOST, async () => {
+  console.log(`Server running at http://${HOST}:${PORT}`);
+  await DB.connectDB();
+});

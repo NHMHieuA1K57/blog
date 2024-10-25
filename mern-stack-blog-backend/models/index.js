@@ -1,19 +1,20 @@
 const mongoose = require("mongoose");
 // khai bao doi tuong co so du lieu
-const DB ={};
+const DB = {};
 DB.Accounts = require("./account.model");
 DB.Categories = require("./category.model");
 DB.Posts = require("./post.model");
 DB.Comments = require("./comment.model");
 DB.Notifications = require("./notification.model");
-DB.connectDB =  async() => {
-    try{
+DB.Report = require("./report.model");
+DB.connectDB = async () => {
+    try {
         await mongoose.connect(process.env.MONGODB_URI)
-        .then(() => console.log("Connected successfully to MongoDB server"))
+            .then(() => console.log("Connected successfully to MongoDB server"))
     }
-    catch(err){
+    catch (err) {
         next(err);
-        process.exit();       
+        process.exit();
     }
 }
 module.exports = DB;
