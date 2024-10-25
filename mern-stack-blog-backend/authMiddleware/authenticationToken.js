@@ -13,7 +13,11 @@ const authenticationToken = (req, res, next) => {
   try {
     // Xác minh token
     const decoded = jwt.verify(token, process.env.JWT_SECRET); // Sử dụng secret key từ môi trường
-    req.user = decoded; // Lưu thông tin user vào req để sử dụng trong controller
+    req.user = {
+      _id: decoded.id,  // Sử dụng `id` từ token và gán vào `_id`
+      email: decoded.email,
+      isAdmin: decoded.isAdmin,
+    }; // Lưu thông tin user vào req để sử dụng trong controller
     next(); // Cho phép tiếp tục nếu token hợp lệ
   } catch (error) {
     // Kiểm tra xem lỗi là do token hết hạn hay không

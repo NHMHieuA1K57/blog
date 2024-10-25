@@ -7,6 +7,8 @@ const httpErrors = require("http-errors");
 const DB = require("./models/index");
 const accountRoute = require("./routes/account.route");
 const commentRoute = require("./routes/comment.route");
+const postRoute = require('./routes/postRoute');
+const categoryRoute = require('./routes/categoryRoute')
 
 require("dotenv").config();
 
@@ -16,7 +18,11 @@ const app = express();
 // them cac middleware vao web server
 app.use(morgan("dev"));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+  origin: '*', 
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type,Authorization'
+}));
 
 // thuc hien tiep nhan request tu client bang get
 app.get("/", async (req, res, next) => {
@@ -24,6 +30,8 @@ app.get("/", async (req, res, next) => {
 });
 app.use("/account", accountRoute);
 app.use("/comment", commentRoute);
+app.use('/post', postRoute);
+app.use('/cate', categoryRoute);
 
 // them middleware xu ly loi tren : router , Controller , Model
 app.use(async (req, res, next) => {
