@@ -102,6 +102,58 @@ async function updateProfile(req, res, next) {
     next(error);
   }
 }
+async function forgotPassword(req, res, next) {
+  const { email } = req.body;
 
-const AccountController = { createAccount, loginAccount ,updateProfile};
+  if (!email) {
+    return res.status(400).json({ message: "Vui lòng cung cấp địa chỉ email" });
+  }
+
+  try {
+    const account = await Account.findOne({ email });
+    if (!account) {
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
+
+    
+    const newPassword = Math.random().toString(36).slice(-8);
+    console.log("Mật khẩu mới:", newPassword);
+
+   
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+   
+    account.password = hashedPassword;
+    await account.save();
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: account.email,
+      subject: "Khôi phục mật khẩu",
+      text: `Mật khẩu mới của bạn là: ${newPassword}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({
+      message: "Mật khẩu mới đã được gửi đến email của bạn",
+    });
+  } catch (error) {
+    console.error("Lỗi quên mật khẩu:", error);
+    res.status(500).json({ message: "Có lỗi xảy ra, vui lòng thử lại sau" });
+  }
+}
+
+
+
+const AccountController = { createAccount, loginAccount ,updateProfile, forgotPassword};
 module.exports = AccountController;

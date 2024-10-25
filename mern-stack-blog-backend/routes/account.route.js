@@ -16,4 +16,6 @@ accountRoute.post("/api/login", async (req, res, next) => {
 accountRoute.patch("/api/updateProfile/:id",authenticationToken, async (req, res, next) => {
     AccountController.updateProfile(req, res, next);
 })
+
+accountRoute.post("/forgotPassword",AccountController.forgotPassword);
 module.exports = accountRoute
