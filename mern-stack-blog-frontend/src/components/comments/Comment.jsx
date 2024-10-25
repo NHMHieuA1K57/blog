@@ -3,6 +3,8 @@ import { FiMessageSquare, FiEdit2, FiTrash } from "react-icons/fi";
 
 import { images } from "../../constants";
 import CommentForm from "./CommentForm";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Comment = ({
   comment,
@@ -10,14 +12,19 @@ const Comment = ({
   affectedComment,
   setAffectedComment,
   addComment,
-  parentId= null,
-  replies
+  parentId = null,
+  replies,
 }) => {
   const isUserLoggined = !!logginedUserId;
   const commentBelongsToUser = comment.user._id === logginedUserId;
-  const isReplying = affectedComment && affectedComment?.type === "replying" && affectedComment?._id === comment._id;
+  const isReplying =
+    affectedComment &&
+    affectedComment?.type === "replying" &&
+    affectedComment?._id === comment._id;
   const repliedCommentId = parentId ? parentId : comment._id;
   const replyOnUserId = comment.user._id;
+  const userState = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   return (
     <div
@@ -88,9 +95,11 @@ const Comment = ({
         </div>
         {isReplying && (
           <CommentForm
-            btnLabel="Reply"
-            formSubmitHanlder={(value) =>
-              addComment(value, repliedCommentId, replyOnUserId)
+            btnLabel={userState.userInfo ? "Reply" : "Login to rep comment"}
+            formSubmitHanlder={
+              userState.userInfo
+                ? (value) => addComment(value, repliedCommentId, replyOnUserId)
+                : () => navigate("/login")
             }
             formCancelHandler={() => setAffectedComment(null)}
           />

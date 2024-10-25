@@ -74,7 +74,7 @@ const ArticleDetailPage = () => {
             header="Latest Article"
             className="mt-8 lg:mt-0 lg:max-w-xs"
             posts={posts}
-            tags={tags}
+            // tags={tags}
           />
           <SocialShareButtons className="mt-8 lg:mt-0" />
         </div>

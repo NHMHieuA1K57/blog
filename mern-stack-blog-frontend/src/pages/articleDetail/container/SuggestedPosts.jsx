@@ -36,7 +36,7 @@ function SuggestedPosts(props) {
           </div>
         ))}
       </div>
-      <h2 className="mt-8 font-roboto font-medium text-dark-hard md:text-xl">
+      {/* <h2 className="mt-8 font-roboto font-medium text-dark-hard md:text-xl">
         Tags
       </h2>
       {tags.length === 0 ? (
@@ -55,7 +55,7 @@ function SuggestedPosts(props) {
             </Link>
           ))}
         </div>
-      )}
+      )} */}
     </div>
   );
 }

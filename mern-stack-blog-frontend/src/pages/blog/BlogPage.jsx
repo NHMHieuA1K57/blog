@@ -2,12 +2,15 @@ import React from "react";
 import ArticleCard from "../../components/ArticleCard";
 import MainLayout from "../../components/MainLayout";
 import Search from "../../components/Search";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 let isFirstRun = true;
 
 const BlogPage = () => {
+  const navigate = useNavigate();
+  const userState = useSelector((state) => state.user);
   // const [searchParams, setSearchParams] = useSearchParams();
 
   // const searchParamsValue = Object.fromEntries([...searchParams]);
@@ -88,13 +91,15 @@ const BlogPage = () => {
             totalPageCount={JSON.parse(data?.headers?.["x-totalpagecount"])}
           />
         )} */}
-        <Link
-          to="/"
-          className="mx-auto flex items-center gap-x-2 rounded-lg border-2 border-primary px-6 py-3 font-bold text-primary"
-        >
-          <span>SignIn to view more</span>
-          <FaArrowRight className="h-3 w-3" />
-        </Link>
+        {!userState.userInfo && (
+          <Link
+            to="/login"
+            className="mx-auto flex items-center gap-x-2 rounded-lg border-2 border-primary px-6 py-3 font-bold text-primary"
+          >
+            <span>SignIn to view more</span>
+            <FaArrowRight className="h-3 w-3" />
+          </Link>
+        )}
       </section>
     </MainLayout>
   );
