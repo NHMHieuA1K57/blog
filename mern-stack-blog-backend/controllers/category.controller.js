@@ -1,3 +1,4 @@
+const { create } = require("../models/account.model");
 const Category = require("../models/category.model");
 
 async function createCategory(req, res, next) {
@@ -9,9 +10,13 @@ async function createCategory(req, res, next) {
   try {
     const newCategory = new Category({ name, description });
     await newCategory.save();
-    res
-      .status(201)
-      .json({ message: "Tạo danh mục thành công", category: newCategory });
+    res.status(201).json({
+      message: "Tạo danh mục thành công",
+      category: {
+        newCategory,
+        createdAt: newCategory.createdAt,
+      },
+    });
   } catch (error) {
     next(error);
   }

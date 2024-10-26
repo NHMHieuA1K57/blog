@@ -3,11 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 // import { categories } from "../../../../constants/dataMock";
 import DataTable from "../../components/DataTable";
 import { MdDelete, MdEdit } from "react-icons/md";
+import axios from "axios";
 
 const Categories = () => {
   const [categoryTitle, setCategoryTitle] = useState("");
   const [categoryList, setCategoryList] = useState([]);
-  const navigate = useNavigate();
+  console.log(categoryList);
 
   const handleCreateCategory = () => {
     const newCategory = {
@@ -20,19 +21,18 @@ const Categories = () => {
     setCategoryTitle("");
   };
 
-  // useEffect(() => {
-  //   const fetchCategories = async () => {
-  //     try {
-  //       const response = await axios.get("http://localhost:9999/cate");
-  //       setCategoryList(response.data);
-  //     } catch (error) {
-  //       console.log(error);
-        
-  //     }
-  //   }
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("http://localhost:9999/cate/all-cate");
+        setCategoryList(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  //   fetchCategories();
-  // },[]);
+    fetchCategories();
+  }, []);
 
   return (
     <div className="grid grid-cols-12 gap-x-4">
@@ -67,13 +67,13 @@ const Categories = () => {
               <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div className="flex items-center">
                   <p className="whitespace-no-wrap text-gray-900">
-                    {category.title}
+                    {category.name}
                   </p>
                 </div>
               </td>
               <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <p className="whitespace-no-wrap text-gray-900">
-                  {category.createAt}
+                  {new Date(category.createdAt).toLocaleDateString()}
                 </p>
               </td>
               <td className="space-x-5 border-b border-gray-200 bg-white px-5 py-5 text-sm">
