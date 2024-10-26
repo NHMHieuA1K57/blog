@@ -1,6 +1,7 @@
 import { IoIosAddCircle } from "react-icons/io";
 import Pagination from "../../../components/Pagination";
 import { useNavigate } from "react-router-dom";
+import { pageUrls } from "../../../constants/pageUrls";
 
 const DataTable = ({
   pageTitle,
@@ -33,7 +34,7 @@ const DataTable = ({
               <IoIosAddCircle
                 color="red"
                 className="ml-3 cursor-pointer text-5xl"
-                onClick={() => navigate("/addNewBlog")}
+                onClick={() => navigate(pageUrls.ADD_NEW_BLOG)}
               />
             )}
             <div className="text-end">

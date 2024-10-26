@@ -4,6 +4,7 @@ import { postsData } from "../../../../constants/dataMock";
 import DataTable from "../../components/DataTable";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
+import { pageUrls } from "../../../../constants/pageUrls";
 
 const ManagePosts = () => {
   const navigate = useNavigate();
@@ -100,7 +101,7 @@ const ManagePosts = () => {
               <button className=" disabled:cursor-not-allowed disabled:opacity-70">
                 <MdEdit
                   color="blue"
-                  onClick={() => navigate("/addNewBlog")}
+                  onClick={() => navigate(pageUrls.ADD_NEW_BLOG)}
                   fontSize={25}
                 />
               </button>
