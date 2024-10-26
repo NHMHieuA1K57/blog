@@ -31,4 +31,10 @@ commentRoute.get("/api/comments/:commentId/replies", async (req, res, next) => {
     CommentController.getReplies(req, res, next);
 });
 
+// Route lấy danh sách tất cả comment
+commentRoute.get("/api/allComments", async (req, res, next) => {
+    CommentController.getAllComments(req, res, next);
+});
+
+
 module.exports = commentRoute;

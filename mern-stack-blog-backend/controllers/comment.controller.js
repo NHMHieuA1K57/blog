@@ -122,6 +122,25 @@ async function getReplies(req, res, next) {
     }
 }
 
-const CommentController = { addComment, updateComment, deleteComment, reportComment, getReplies };
+// Get all comments
+async function getAllComments(req, res, next) {
+    try {
+        const comments = await Comment.find()
+            .populate('account', 'username') // Populate account field to get username
+            .populate('post', 'title') // Populate post field to get post title
+            .populate('replyOnUser', 'username') // Populate replyOnUser field to get username
+            .exec();
+        
+        res.status(200).json({
+            message: "Comments fetched successfully",
+            data: comments,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+
+const CommentController = { addComment, updateComment, deleteComment, reportComment, getReplies, getAllComments };
 
 module.exports = CommentController;
