@@ -18,7 +18,9 @@ async function createCategory(req, res, next) {
       },
     });
   } catch (error) {
-    next(error);
+    next({
+      message: error.message,
+    });
   }
 }
 
@@ -27,7 +29,9 @@ async function getCategories(req, res, next) {
     const categories = await Category.find();
     res.status(200).json(categories);
   } catch (error) {
-    next(error);
+    next({
+      message: error.message,
+    });
   }
 }
 
@@ -41,7 +45,9 @@ async function deleteCategory(req, res, next) {
     }
     res.status(200).json({ message: "Delete category successfully" });
   } catch (error) {
-    next(error);
+    next({
+      message: error.message,
+    });
   }
 }
 
