@@ -4,7 +4,7 @@ const Post = require('../models/post.model');
 // Add a new comment
 async function addComment(req, res, next) {
     const { postId, content, parent, replyOnUser } = req.body;
-    const userId = req.user.id; // Get the user ID from the authenticated request
+    const userId = req.user._id; // Get the user ID from the authenticated request
 
     try {
         const post = await Post.findById(postId);
@@ -39,7 +39,7 @@ async function addComment(req, res, next) {
 async function updateComment(req, res, next) {
     const { commentId } = req.params;
     const { content } = req.body;
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     try {
         const comment = await Comment.findById(commentId);
@@ -64,7 +64,7 @@ async function updateComment(req, res, next) {
 // Delete a comment
 async function deleteComment(req, res, next) {
     const { commentId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     try {
         const comment = await Comment.findById(commentId);
@@ -87,7 +87,7 @@ async function deleteComment(req, res, next) {
 // Report a comment
 async function reportComment(req, res, next) {
     const { commentId } = req.params;
-    const userId = req.user.id; // Get the user ID from the authenticated request
+    const userId = req.user._id; // Get the user ID from the authenticated request
 
     try {
         const comment = await Comment.findById(commentId);
