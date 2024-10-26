@@ -1,10 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { images } from "../../../../constants";
-import { postsData } from "../../../../constants/dataMock";
+// import { postsData } from "../../../../constants/dataMock";
 import DataTable from "../../components/DataTable";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { pageUrls } from "../../../../constants/pageUrls";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const ManagePosts = () => {
   const navigate = useNavigate();
@@ -33,6 +35,20 @@ const ManagePosts = () => {
   //   },
   // });
 
+  const [posts, setPosts] = useState([]);  
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get("http://localhost:9999/post/all-post");
+        setPosts(response.data);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
   return (
     <>
       <DataTable
@@ -46,20 +62,20 @@ const ManagePosts = () => {
         tableHeaderTitleList={["Title", "Category", "Created At", "Actions"]}
         // isLoading={isLoading}
         // isFetching={isFetching}
-        data={postsData?.data}
+        data={posts}
         // setCurrentPage={setCurrentPage}
         // currentPage={currentPage}
         // headers={postsData?.headers}
         // userState={userState}
       >
-        {postsData?.data.map((post, index) => (
+        {posts.map((post, index) => (
           <tr key={index}>
             <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <a href="/" className="relative block">
                     <img
-                      src={images.samplePostImage}
+                      src={post.images[0] || images.Post1Image}
                       alt={post.title}
                       className="mx-auto aspect-square w-10 rounded-lg object-cover"
                     />
@@ -73,19 +89,8 @@ const ManagePosts = () => {
               </div>
             </td>
             <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap text-gray-900">
-                {post.categories.length > 0
-                  ? post.categories
-                      .slice(0, 3)
-                      .map(
-                        (category, index) =>
-                          `${category.title}${
-                            post.categories.slice(0, 3).length === index + 1
-                              ? ""
-                              : ", "
-                          }`
-                      )
-                  : "Uncategorized"}
+              <p className="whitespace-no-wrap text-gray-900 font-bold">
+                {post.category.name}
               </p>
             </td>
             <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">

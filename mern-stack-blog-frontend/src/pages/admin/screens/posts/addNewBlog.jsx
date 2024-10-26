@@ -80,7 +80,7 @@ const BlogPostForm = () => {
               id="title"
               value={title}
               onChange={handleTitleChange}
-              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 ${
+              className={`mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 ${
                 errors.title ? "border-red-500" : ""
               }`}
               placeholder="Enter your blog post title"
@@ -112,12 +112,7 @@ const BlogPostForm = () => {
                 defaultValue={[categories[0], categories[1]]}
                 options={categories}
               /> */}
-            <Select
-              className="z-10"
-              isMulti
-              options={categories}
-              defaultValue={[categories[0], categories[1]]}
-            />
+            <Select className="z-10" options={categories} />
           </div>
 
           <div>

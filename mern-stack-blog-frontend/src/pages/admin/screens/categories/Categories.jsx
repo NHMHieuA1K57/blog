@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { categories } from "../../../../constants/dataMock";
+// import { categories } from "../../../../constants/dataMock";
 import DataTable from "../../components/DataTable";
 import { MdDelete, MdEdit } from "react-icons/md";
 
 const Categories = () => {
   const [categoryTitle, setCategoryTitle] = useState("");
-  const [categoryList, setCategoryList] = useState(categories);
+  const [categoryList, setCategoryList] = useState([]);
   const navigate = useNavigate();
 
   const handleCreateCategory = () => {
@@ -19,6 +19,20 @@ const Categories = () => {
     setCategoryList([...categoryList, newCategory]);
     setCategoryTitle("");
   };
+
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const response = await axios.get("http://localhost:9999/cate");
+  //       setCategoryList(response.data);
+  //     } catch (error) {
+  //       console.log(error);
+        
+  //     }
+  //   }
+
+  //   fetchCategories();
+  // },[]);
 
   return (
     <div className="grid grid-cols-12 gap-x-4">
