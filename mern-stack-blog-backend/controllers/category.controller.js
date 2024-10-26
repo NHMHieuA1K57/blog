@@ -31,9 +31,24 @@ async function getCategories(req, res, next) {
   }
 }
 
+async function deleteCategory(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const category = await Category.findByIdAndDelete(id);
+    if (!category) {
+      return res.status(404).json({ message: "Cannot find category" });
+    }
+    res.status(200).json({ message: "Delete category successfully" });
+  } catch (error) {
+    next(error);
+  }
+}
+
 const CateController = {
   createCategory,
   getCategories,
+  deleteCategory,
 };
 
 module.exports = CateController;
