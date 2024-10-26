@@ -48,8 +48,7 @@ const ArticleDetailPage = () => {
           <div className="mt-4 flex gap-2">
             <Link
               to={`/blog?category=categoryName`}
-              className="inline-block font-roboto text-sm text-primary md:text-base"
-            >
+              className="inline-block font-roboto text-sm text-primary md:text-base">
               Education
             </Link>
           </div>

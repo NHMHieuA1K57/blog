@@ -1,3 +1,4 @@
+// Component ArticleCard.js
 import React from "react";
 import { BsCheckLg } from "react-icons/bs";
 import { Link } from "react-router-dom";
@@ -5,9 +6,9 @@ import { Link } from "react-router-dom";
 const ArticleCard = ({ post, className }) => {
   return (
     <div className={`overflow-hidden rounded-xl shadow-[rgba(7,_65,_210,_0.1)_0px_9px_30px] ${className}`}>
-      <Link to={`/blog/${post.id}`}>
+      <Link to={`/blog/${post._id}`}>
         <img
-          src={post.image || "path/to/default/image.jpg"}
+          src={post.images[0] || "path/to/default/image.jpg"}
           alt={post.title}
           className="h-auto w-full object-cover object-center md:h-52 lg:h-48 xl:h-60"
         />
@@ -17,12 +18,12 @@ const ArticleCard = ({ post, className }) => {
           {post.title}
         </h2>
         <p className="mt-3 text-sm text-dark-light md:text-lg">
-          {post.description}
+          {post.content}
         </p>
         <div className="mt-6 flex flex-nowrap items-center justify-between">
           <div className="flex items-center gap-x-2 md:gap-x-2.5">
             <img
-              src={post.authorImage || "path/to/default/image.jpg"}
+              src={post.author.image || "https://cdn0.iconfinder.com/data/icons/occupation-001/64/author-writing-occupation-avatar-512.png"}
               alt="post profile"
               className="h-9 w-9 rounded-full md:h-10 md:w-10"
             />
@@ -41,7 +42,7 @@ const ArticleCard = ({ post, className }) => {
             </div>
           </div>
           <span className="text-sm font-bold italic text-dark-light md:text-base">
-            {new Date(post.date).toLocaleDateString()}
+            {new Date(post.createdAt).toLocaleDateString()}
           </span>
         </div>
       </div>
