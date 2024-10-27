@@ -4,10 +4,16 @@ import Select from "react-select";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Editor from "../../../../components/editor/Editor";
-import { categories } from "../../../../constants/dataMock";
+import useGetDataCategory from "../../../../hooks/useGetDataCategory";
+import axios from "axios";
 
 const BlogPostForm = () => {
   const fileInputRef = useRef(null);
+  const { data, isLoading } = useGetDataCategory();
+  const categories = data.map((category) => ({
+    value: category._id,
+    label: category.name,
+  }));
 
   const initialValues = {
     title: "",
@@ -40,9 +46,14 @@ const BlogPostForm = () => {
     }
   };
 
-  const handleSubmit = (values) => {
-    // Submit form logic here
-    console.log("Form submitted", values);
+  const handleSubmit = async (values) => {
+    try {
+      await axios.post("http://localhost:9999/blog/addPost", values);
+      alert("Post created successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to create post.");
+    }
   };
 
   return (
@@ -102,6 +113,7 @@ const BlogPostForm = () => {
                   className="z-10"
                   options={categories}
                   onChange={(option) => setFieldValue("category", option)}
+                  isLoading={isLoading}
                 />
               </div>
 
