@@ -4,6 +4,7 @@ const Category = require('../models/category.model');
 
 async function createPost(req, res, next) {
   const { title, content, category } = req.body;
+  console.log(req.body);
   if (!title || !content || !category) {
     return res.status(400).json({ message: "Vui lòng nhập tất cả các trường bắt buộc" });
   }
