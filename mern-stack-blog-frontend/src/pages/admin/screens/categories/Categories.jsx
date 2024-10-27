@@ -1,49 +1,34 @@
 import { useState } from "react";
-// import { categories } from "../../../../constants/dataMock";
 import { MdDelete } from "react-icons/md";
+import Alert from "../../../../components/Alert";
+import useCreateCategory from "../../../../hooks/useCreateCategory";
+import useDeleteCategory from "../../../../hooks/useDeleteCategory";
 import useGetDataCategory from "../../../../hooks/useGetDataCategory";
 import DataTable from "../../components/DataTable";
-import axios from "axios";
-import Alert from "../../../../components/Alert";
-import useDeleteCategory from "../../../../hooks/useDeleteCategory";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 const Categories = () => {
   const [categoryTitle, setCategoryTitle] = useState("");
   const { data: categoryList, isLoading, refetch } = useGetDataCategory();
-  const { deleteCategory, error } = useDeleteCategory();
+  const { deleteCategory } = useDeleteCategory(refetch);
   const [alert, setAlert] = useState(null);
+  const { createCategory } = useCreateCategory(refetch);
 
-  const handleCreateCategory = async () => {
-    try {
-      const newCategory = {
-        name: categoryTitle,
-      };
-
-      await axios.post("http://localhost:9999/cate/addCate", newCategory);
-      setAlert({
-        type: "success",
-        message: `Create category ${categoryTitle} successfully!`,
-      });
-      setCategoryTitle("");
-      refetch();
-    } catch (error) {
-      console.log(error);
-      setAlert({ type: "error", message: error.response.data.message });
-    }
+  const handleCreateCategory = () => {
+    createCategory(categoryTitle, setAlert);
+    setCategoryTitle("");
   };
 
-  const handleDeleteCategory = async (id) => {
-    await deleteCategory(id);
-    if (!error) {
-      refetch();
-      setAlert({ type: "success", message: "Delete category successfully!" });
-    } else {
-      setAlert({ type: "error", message: error.response.data.message });
-    }
+  const handleDeleteCategory = (id) => {
+    deleteCategory(
+      id,
+      setAlert,
+      categoryList.find((cate) => cate._id === id).name
+    );
   };
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <LoadingSpinner />;
   }
 
   return (

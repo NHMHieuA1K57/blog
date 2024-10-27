@@ -1,12 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { images } from "../../../../constants";
 // import { postsData } from "../../../../constants/dataMock";
-import DataTable from "../../components/DataTable";
-import { MdDelete } from "react-icons/md";
-import { MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { pageUrls } from "../../../../constants/pageUrls";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import useGetDataPosts from "../../../../hooks/useGetDataPosts";
+import DataTable from "../../components/DataTable";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 const ManagePosts = () => {
   const navigate = useNavigate();
@@ -35,19 +34,11 @@ const ManagePosts = () => {
   //   },
   // });
 
-  const [posts, setPosts] = useState([]);  
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get("http://localhost:9999/post/all-post");
-        setPosts(response.data);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
+  const {data: posts, isLoading} = useGetDataPosts();
 
-    fetchPosts();
-  }, []);
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>
@@ -73,13 +64,13 @@ const ManagePosts = () => {
             <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <a href="/" className="relative block">
+                  <Link to={`/blog/${post._id}`} className="relative block">
                     <img
                       src={post.images[0] || images.Post1Image}
                       alt={post.title}
                       className="mx-auto aspect-square w-10 rounded-lg object-cover"
                     />
-                  </a>
+                  </Link>
                 </div>
                 <div className="ml-3">
                   <p className="whitespace-no-wrap text-gray-900">
