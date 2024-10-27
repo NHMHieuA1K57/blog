@@ -47,14 +47,39 @@ const BlogPostForm = () => {
   };
 
   const handleSubmit = async (values) => {
+    const token = localStorage.getItem("token");
+  
+    // Khởi tạo FormData
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("content", values.content);
+    formData.append("category", values.category.value); // Chỉ lấy ID từ category
+  
+    // Xử lý hình ảnh nếu có
+    if (values.image) {
+      const base64Image = values.image.split(",")[1]; // Tách chuỗi Base64 nếu cần thiết
+      // Nếu backend yêu cầu file, bạn cần tạo một Blob và thêm vào FormData
+      const blob = await fetch(`data:image/png;base64,${base64Image}`).then(res => res.blob());
+      formData.append("images", blob, 'image.png'); // 'images' là tên bạn muốn sử dụng cho file trong req.files
+    }
+  
     try {
-      await axios.post("http://localhost:9999/blog/addPost", values);
+      await axios.post("http://localhost:9999/blog/addPost", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data", 
+        },
+      });
       alert("Post created successfully!");
     } catch (error) {
-      console.error(error);
+      console.error("Error response data:", error.response?.data); 
       alert("Failed to create post.");
     }
+  
+   
   };
+  
+  
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 p-4">

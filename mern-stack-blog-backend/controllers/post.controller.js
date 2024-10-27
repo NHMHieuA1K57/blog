@@ -41,7 +41,7 @@ async function createPost(req, res, next) {
         },
         author: {
           id: req.user._id, 
-          name: req.user.name, 
+          name: req.user.name
         },
         createdAt: newPost.createdAt,
       },

@@ -19,14 +19,21 @@ const LoginPage = () => {
       return login({ email, password });
     },
     onSuccess: (data) => {
+      const token = data.token;
+      if (token) {
+        localStorage.setItem("token", token); // Lưu token vào localStorage
+      }
       dispatch(userActions.setUserInfo(data));
-      localStorage.setItem("account", JSON.stringify(data));
+      localStorage.setItem("account", JSON.stringify(data)); // log cái này ra xem nó ra data như nào
     },
     onError: (error) => {
       toast.error(error.message);
       console.log(error);
     },
   });
+
+  console.log(localStorage.getItem("account"));
+  
 
   useEffect(() => {
     if (userState.userInfo) {
