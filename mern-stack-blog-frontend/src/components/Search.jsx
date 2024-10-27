@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FiSearch } from "react-icons/fi";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Search = ({ className }) => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -8,6 +9,7 @@ const Search = ({ className }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const resultsRef = useRef(null);
+  const navigate = useNavigate(); // dùng để điều hướng
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -56,6 +58,10 @@ const Search = ({ className }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleResultClick = (postId) => {
+    navigate(`/detail/${postId}`);
+  };
+
   return (
     <div className={`flex flex-col gap-y-2.5 relative ${className}`}>
       <form className="flex flex-col gap-y-2.5">
@@ -77,7 +83,11 @@ const Search = ({ className }) => {
       {searchResults.length > 0 && (
         <div ref={resultsRef} className="mt-2 bg-white border border-gray-200 rounded-lg shadow-lg absolute w-full z-10 top-full">
           {searchResults.map((post) => (
-            <div key={post._id} className="p-4 border-b last:border-b-0">
+            <div
+              key={post._id}
+              className="p-4 border-b last:border-b-0 cursor-pointer"
+              onClick={() => handleResultClick(post._id)}
+            >
               <h3 className="font-bold">{post.title}</h3>
               <p>{post.content ? post.content.slice(0, 100) : "Không có nội dung"}...</p>
               {/* <p>Danh mục: {post.category ? post.category.name : "Chưa có danh mục"}</p> */}
@@ -87,7 +97,6 @@ const Search = ({ className }) => {
           ))}
         </div>
       )}
-
     </div>
   );
 };
