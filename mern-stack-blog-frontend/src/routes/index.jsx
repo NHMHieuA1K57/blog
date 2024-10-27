@@ -12,6 +12,7 @@ import HomePage from "../pages/home/HomePage";
 import LoginPage from "../pages/login/LoginPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import RegisterPage from "../pages/register/RegisterPage";
+import BlogPostForm from "../pages/admin/screens/posts/addNewBlog";
 import ForgotPassword from "../pages/forgotPassword/ForgotPassword";
 const routes = [
   {
@@ -39,6 +40,10 @@ const routes = [
         path: pageUrls.USERS,
         component: Users,
       },
+      {
+        path: pageUrls.ADD_NEW_BLOG,
+        component: BlogPostForm,
+      },
     ],
   },
   {
@@ -46,7 +51,7 @@ const routes = [
     component: HomePage,
   },
   {
-    path: pageUrls.ARTICLE_DETAIL_PAGE,
+    path: pageUrls.BLOG_DETAIL,
     component: ArticleDetailPage,
   },
   {

@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { images } from "../../../../constants";
-import { postsData } from "../../../../constants/dataMock";
+// import { postsData } from "../../../../constants/dataMock";
+import { MdDelete, MdEdit } from "react-icons/md";
+import { pageUrls } from "../../../../constants/pageUrls";
+import useGetDataPosts from "../../../../hooks/useGetDataPosts";
 import DataTable from "../../components/DataTable";
-import { MdDelete } from "react-icons/md";
-import { MdEdit } from "react-icons/md";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 const ManagePosts = () => {
   const navigate = useNavigate();
@@ -32,6 +34,12 @@ const ManagePosts = () => {
   //   },
   // });
 
+  const {data: posts, isLoading} = useGetDataPosts();
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <>
       <DataTable
@@ -45,24 +53,24 @@ const ManagePosts = () => {
         tableHeaderTitleList={["Title", "Category", "Created At", "Actions"]}
         // isLoading={isLoading}
         // isFetching={isFetching}
-        data={postsData?.data}
+        data={posts}
         // setCurrentPage={setCurrentPage}
         // currentPage={currentPage}
         // headers={postsData?.headers}
         // userState={userState}
       >
-        {postsData?.data.map((post, index) => (
+        {posts.map((post, index) => (
           <tr key={index}>
             <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <a href="/" className="relative block">
+                  <Link to={`/blog/${post._id}`} className="relative block">
                     <img
-                      src={images.samplePostImage}
+                      src={post.images[0] || images.Post1Image}
                       alt={post.title}
                       className="mx-auto aspect-square w-10 rounded-lg object-cover"
                     />
-                  </a>
+                  </Link>
                 </div>
                 <div className="ml-3">
                   <p className="whitespace-no-wrap text-gray-900">
@@ -72,19 +80,8 @@ const ManagePosts = () => {
               </div>
             </td>
             <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap text-gray-900">
-                {post.categories.length > 0
-                  ? post.categories
-                      .slice(0, 3)
-                      .map(
-                        (category, index) =>
-                          `${category.title}${
-                            post.categories.slice(0, 3).length === index + 1
-                              ? ""
-                              : ", "
-                          }`
-                      )
-                  : "Uncategorized"}
+              <p className="whitespace-no-wrap text-gray-900 font-bold">
+                {post.category.name}
               </p>
             </td>
             <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -100,7 +97,7 @@ const ManagePosts = () => {
               <button className=" disabled:cursor-not-allowed disabled:opacity-70">
                 <MdEdit
                   color="blue"
-                  onClick={() => navigate("/addNewBlog")}
+                  onClick={() => navigate(pageUrls.ADD_NEW_BLOG)}
                   fontSize={25}
                 />
               </button>

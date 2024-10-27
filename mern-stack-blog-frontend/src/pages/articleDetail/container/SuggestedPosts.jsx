@@ -1,8 +1,25 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import useGetDataPosts from "../../../hooks/useGetDataPosts";
 
 function SuggestedPosts(props) {
-  const { className, header, posts = [], tags } = props;
+  const { className, header, category } = props;
+  const { data: posts } = useGetDataPosts();
+
+  const suggestedPosts = posts.filter((post) => post.category === category);
+
+  if (suggestedPosts.length === 0)
+    return (
+      <div>
+        <h2 className="font-roboto font-medium text-dark-hard md:text-xl">
+          {header}
+        </h2>
+        <p className="font-roboto text-sm font-medium text-dark-hard">
+          No suggested posts
+        </p>
+      </div>
+    );
+
   return (
     <div
       className={`w-full rounded-lg p-4 shadow-[rgba(7,_65,_210,_0.1)_0px_9px_30px] ${className}`}
@@ -11,7 +28,7 @@ function SuggestedPosts(props) {
         {header}
       </h2>
       <div className="mt-5 grid gap-y-5 md:grid-cols-2 md:gap-x-5 lg:grid-cols-1">
-        {posts.map((item) => (
+        {suggestedPosts.map((item) => (
           <div
             key={item._id}
             className="flex flex-nowrap items-center space-x-3"
@@ -36,26 +53,6 @@ function SuggestedPosts(props) {
           </div>
         ))}
       </div>
-      {/* <h2 className="mt-8 font-roboto font-medium text-dark-hard md:text-xl">
-        Tags
-      </h2>
-      {tags.length === 0 ? (
-        <p className="mt-2 text-xs text-slate-500">
-          There is not tags for this post
-        </p>
-      ) : (
-        <div className="mt-4 flex flex-wrap gap-x-2 gap-y-2">
-          {tags.map((item, index) => (
-            <Link
-              key={index}
-              to="/"
-              className="inline-block rounded-md bg-primary px-3 py-1.5 font-roboto text-xs text-white md:text-sm"
-            >
-              {item}
-            </Link>
-          ))}
-        </div>
-      )} */}
     </div>
   );
 }
