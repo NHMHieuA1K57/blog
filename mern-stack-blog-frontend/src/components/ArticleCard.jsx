@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const ArticleCard = ({ post, className }) => {
   return (
     <div className={`overflow-hidden rounded-xl shadow-[rgba(7,_65,_210,_0.1)_0px_9px_30px] ${className}`}>
-      <Link to={`/blog/${post.id}`}>
+      <Link to={`/detail/${post.id}`}>
         <img
           src={post.image || "path/to/default/image.jpg"}
           alt={post.title}
