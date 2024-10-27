@@ -9,7 +9,7 @@ const Search = ({ className }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const resultsRef = useRef(null);
-  const navigate = useNavigate(); // dùng để điều hướng
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -23,7 +23,7 @@ const Search = ({ className }) => {
 
       try {
         const response = await axios.get(
-          `http://localhost:9999/post/search?query=${searchKeyword}`
+          `http://localhost:9999/blog/search?query=${searchKeyword}`
         );
         setSearchResults(response.data);
       } catch (error) {
@@ -59,7 +59,7 @@ const Search = ({ className }) => {
   }, []);
 
   const handleResultClick = (postId) => {
-    navigate(`/detail/${postId}`);
+    navigate(`/detail/${postId}`); 
   };
 
   return (

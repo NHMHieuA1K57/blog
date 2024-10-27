@@ -13,7 +13,7 @@ const BlogPage = () => {
   const userState = useSelector((state) => state.user);
 
   useEffect(() => {
-    axios.get("http://localhost:9999/post/all-post")
+    axios.get("http://localhost:9999/blog/all-post")
       .then((response) => {
         setPosts(response.data);
         setIsLoading(false);
