@@ -165,6 +165,39 @@ async function listPost(req, res, next) {
   }
 }
 
+async function searchPost(req, res, next) {
+  const { query, category, author, page = 1, limit = 10 } = req.query;
+  if (!query) {
+    return res.status(400).json({ message: "Vui lòng nhập từ khóa tìm kiếm" });
+  }
+  try {
+    const searchCriteria = {
+      $or: [
+        { title: { $regex: query, $options: "i" } },
+        { content: { $regex: query, $options: "i" } }
+        // { "category.name": { $regex: query, $options: "i" } } 
+      ]
+    };
+
+    if (category) {
+      searchCriteria.category = mongoose.Types.ObjectId(category);
+    }
+
+    if (author) {
+      searchCriteria.author = mongoose.Types.ObjectId(author);
+    }
+    const posts = await Post.find(searchCriteria)
+      .populate("author", "name email")
+      .populate("category", "name")
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Lỗi khi tìm kiếm bài viết:", error);
+    next(error);
+  }
+}
 
 const PostController =
 {
@@ -173,5 +206,6 @@ const PostController =
   deletePost,
   detailPost,
   listPost,
+  searchPost,
 };
 module.exports = PostController;

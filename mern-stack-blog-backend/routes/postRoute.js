@@ -10,5 +10,5 @@ router.put('/update-post/:id',authenticationToken,authorizeAdmin,upload.array('i
 router.get('/detail/:id',PostController.detailPost);
 router.delete('/delete-post/:id',authenticationToken,authorizeAdmin,PostController.deletePost);
 router.get('/all-post',PostController.listPost)
-
+router.get("/search", PostController.searchPost);
 module.exports = router;
