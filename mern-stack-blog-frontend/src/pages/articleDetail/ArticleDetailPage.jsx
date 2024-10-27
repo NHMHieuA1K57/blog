@@ -1,32 +1,21 @@
 import { Link, useParams } from "react-router-dom";
 import BreadCrumbs from "../../components/BreadCrumbs";
 import MainLayout from "../../components/MainLayout";
-import { images } from "../../constants";
-import SuggestedPosts from "./container/SuggestedPosts";
 import SocialShareButtons from "../../components/SocialShareButtons";
 import CommentContainer from "../../components/comments/CommentContainer";
-import { breadCrumbsData, tags } from "../../constants/dataMock";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { images } from "../../constants";
+import { breadCrumbsData } from "../../constants/dataMock";
+import useGetDataPostDetail from "../../hooks/useGetDataPostDetail";
+import SuggestedPosts from "./container/SuggestedPosts";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const ArticleDetailPage = () => {
-  const [postDetail, setPostDetail] = useState(null);
   const { id } = useParams();
+  const { data: postDetail, isLoading } = useGetDataPostDetail(id);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:9999/post/detail/${id}`
-        );
-        setPostDetail(response.data.post);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchPosts();
-  }, [id]);
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <MainLayout>
@@ -50,9 +39,7 @@ const ArticleDetailPage = () => {
             {postDetail?.title}
           </h1>
           <div className="mt-4 text-dark-soft">
-            <p className="leading-7">
-              {postDetail?.content}
-            </p>
+            <p className="leading-7">{postDetail?.content}</p>
           </div>
           <CommentContainer className={"mt-10"} logginedUserId="a" />
         </article>

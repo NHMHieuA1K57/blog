@@ -1,26 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ArticleCardT from "../../../components/ArticleCardT";
+import useGetDataPosts from "../../../hooks/useGetDataPosts";
 
 const Articles = () => {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get("http://localhost:9999/blog/all-post");
-        setPosts(response.data);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
-
-    fetchPosts();
-  }, []);
+  const { data: posts } = useGetDataPosts();
 
   // const featuredPosts = posts.filter(post => post.featured);
-  const newestPosts = posts
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const newestPosts = posts.sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
 
   return (
     <section className="container mx-auto flex flex-col px-5 py-10">

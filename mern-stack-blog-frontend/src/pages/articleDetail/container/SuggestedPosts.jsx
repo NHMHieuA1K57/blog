@@ -1,22 +1,10 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import useGetDataPosts from "../../../hooks/useGetDataPosts";
 
 function SuggestedPosts(props) {
   const { className, header, category } = props;
-  const [posts, setPosts] = useState([]);
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get("http://localhost:9999/post/all-post");
-        setPosts(response.data);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
-
-    fetchPosts();
-  }, []);
+  const { data: posts } = useGetDataPosts();
 
   const suggestedPosts = posts.filter((post) => post.category === category);
 
