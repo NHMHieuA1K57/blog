@@ -9,7 +9,7 @@ const Articles = () => {
   // const featuredPosts = posts.filter(post => post.featured);
   const newestPosts = posts.sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-  );
+  ).slice(0, 6);
 
   if(isLoading) return <LoadingSpinner />;
   return (
