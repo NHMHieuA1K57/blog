@@ -30,7 +30,7 @@ app.get("/", async (req, res, next) => {
 });
 app.use("/account", accountRoute);
 app.use("/comment", commentRoute);
-app.use('/post', postRoute);
+app.use('/blog', postRoute);
 app.use('/cate', categoryRoute);
 
 // them middleware xu ly loi tren : router , Controller , Model

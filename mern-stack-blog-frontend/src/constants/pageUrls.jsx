@@ -3,6 +3,7 @@ export const pageUrls = {
   BLOG: "/blog",
   LOGIN: "/login",
   REGISTER: "/register",
+  FORGOT_PASSWORD: "/forget-password",
   PROFILE: "/profile",
   ADD_NEW_BLOG: "/addNewBlog",
   ABOUT: "/about",
@@ -14,7 +15,7 @@ export const pageUrls = {
   USERS: "/admin/users/manage",
   ADD_NEW_BLOG: "/admin/addNewBlog",
   
-  BLOG_DETAIL: "/blog/:id",
+  BLOG_DETAIL: "/detail/:id",
   NOT_FOUND: "/404",
 };
 
