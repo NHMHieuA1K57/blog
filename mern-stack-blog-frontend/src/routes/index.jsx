@@ -12,7 +12,7 @@ import HomePage from "../pages/home/HomePage";
 import LoginPage from "../pages/login/LoginPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import RegisterPage from "../pages/register/RegisterPage";
-
+import ForgotPassword from "../pages/forgotPassword/ForgotPassword";
 const routes = [
   {
     path: pageUrls.ADMIN,
@@ -64,6 +64,9 @@ const routes = [
   {
     path: pageUrls.REGISTER,
     component: RegisterPage,
+  },
+  { path: pageUrls.FORGOT_PASSWORD,
+     component:  ForgotPassword
   },
   {
     path: pageUrls.NOT_FOUND,

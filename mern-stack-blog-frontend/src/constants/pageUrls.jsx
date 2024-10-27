@@ -3,6 +3,7 @@ export const pageUrls = {
   BLOG: "/blog",
   LOGIN: "/login",
   REGISTER: "/register",
+  FORGOT_PASSWORD: "/forget-password",
   PROFILE: "/profile",
   ADD_NEW_BLOG: "/addNewBlog",
   ABOUT: "/about",
