@@ -9,7 +9,7 @@ const Articles = () => {
   // const featuredPosts = posts.filter(post => post.featured);
   const newestPosts = posts.sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-  );
+  ).slice(0, 6);
 
   return (
     <section className="container mx-auto flex flex-col px-5 py-10">
