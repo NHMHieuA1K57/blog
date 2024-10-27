@@ -1,93 +1,144 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { images } from "../../../../constants";
-import { users } from "../../../../constants/dataMock";
 import DataTable from "../../components/DataTable";
-import { MdDelete } from "react-icons/md";
+import axios from "axios";
 import { FaBan } from "react-icons/fa";
-
+import { FaSort } from "react-icons/fa";
 
 const Users = () => {
-  // const {
-  //   userState,
-  //   currentPage,
-  //   searchKeyword,
-  //   data: usersData,
-  //   isLoading,
-  //   isFetching,
-  //   isLoadingDeleteData,
-  //   queryClient,
-  //   searchKeywordHandler,
-  //   submitSearchKeywordHandler,
-  //   deleteDataHandler,
-  //   setCurrentPage,
-  // } = useDataTable({
-  //   dataQueryFn: () =>
-  //     getAllUsers(userState.userInfo.token, searchKeyword, currentPage),
-  //   dataQueryKey: "users",
-  //   deleteDataMessage: "User is deleted",
-  //   mutateDeleteFn: ({ slug, token }) => {
-  //     return deleteUser({
-  //       slug,
-  //       token,
-  //     });
-  //   },
-  // });
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc"); // Trạng thái sắp xếp
 
-  // const { mutate: mutateUpdateUser, isLoading: isLoadingUpdateUser } =
-  //   useMutation({
-  //     mutationFn: ({ isAdmin, userId }) => {
-  //       return updateProfile({
-  //         token: userState.userInfo.token,
-  //         userData: { admin: isAdmin },
-  //         userId,
-  //       });
-  //     },
-  //     onSuccess: (data) => {
-  //       queryClient.invalidateQueries(["users"]);
-  //       toast.success("User is updated");
-  //     },
-  //     onError: (error) => {
-  //       toast.error(error.message);
-  //       console.log(error);
-  //     },
-  //   });
+  const account = JSON.parse(localStorage.getItem("account"));
+  const token = account?.token;
 
-  // const handleAdminCheck = (event, userId) => {
-  //   const initialCheckValue = !event.target.checked;
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:9999/account/api/getUser",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUsers(response.data.data);
+        setLoading(false);
+      } catch (err) {
+        setError("Some thing went wrong, cannot get users.");
+        setLoading(false);
+      }
+    };
 
-  //   if (
-  //     window.confirm("Do you want to change the admin status of this user?")
-  //   ) {
-  //     mutateUpdateUser({ isAdmin: event.target.checked, userId });
-  //   } else {
-  //     event.target.checked = initialCheckValue;
-  //   }
-  // };
+    fetchUsers();
+  }, []);
+
+  // Hàm sắp xếp user theo tổng report
+  const sortUsersByReports = () => {
+    const sortedUsers = [...users].sort((a, b) => {
+      return sortOrder === "asc"
+        ? a.totalReport - b.totalReport
+        : b.totalReport - a.totalReport;
+    });
+    setUsers(sortedUsers);
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc"); // Đổi chiều sắp xếp sau mỗi lần bấm
+  };
+
+  const filteredUsers = users.filter((user) =>
+    user.email.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
+
+  const handleBanUser = async (userId, totalReport) => {
+    if (totalReport < 5) {
+      const confirmBan = window.confirm(
+        "This user has less than 5 reports. Are you sure want to ban this user?"
+      );
+      if (!confirmBan) return;
+    }
+
+    try {
+      const response = await axios.patch(
+        `http://localhost:9999/account/api/changeStatusBan/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const updatedUser = response.data.data;
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === updatedUser._id
+            ? { ...user, isBan: updatedUser.isBan }
+            : user
+        )
+      );
+    } catch (error) {
+      console.error("Không thể ban user:", error);
+    }
+  };
+
+  const handleUnbanUser = async (userId) => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:9999/account/api/changeStatusBan/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const updatedUser = response.data.data;
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === updatedUser._id
+            ? { ...user, isBan: updatedUser.isBan }
+            : user
+        )
+      );
+    } catch (error) {
+      console.error("Không thể unban user:", error);
+    }
+  };
 
   return (
     <DataTable
       pageTitle="Manage Users"
       dataListName="Users"
       searchInputPlaceHolder="User's email..."
-      // searchKeywordOnSubmitHandler={submitSearchKeywordHandler}
-      // searchKeywordOnChangeHandler={searchKeywordHandler}
-      // searchKeyword={searchKeyword}
+      searchKeywordOnChangeHandler={(e) => setSearchKeyword(e.target.value)}
+      searchKeyword={searchKeyword}
       tableHeaderTitleList={[
         "Name",
         "Email",
         "Created At",
         "Total Report",
+        "Status",
         "Action",
       ]}
-      // isLoading={isLoading}
-      // isFetching={isFetching}
-      data={users}
-      // setCurrentPage={setCurrentPage}
-      // currentPage={currentPage}
-      // headers={usersData?.headers}
-      // userState={userState}
+      data={filteredUsers}
+      isLoading={loading}
     >
-      {users.map((user) => (
+      <button
+        onClick={sortUsersByReports}
+        className="mb-4 flex items-center rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      >
+        <FaSort className="mr-2 text-white" />
+        <span>
+          Sort by Total Report (
+          {sortOrder === "asc" ? "Ascending" : "Descending"})
+        </span>
+      </button>
+
+      {filteredUsers.map((user) => (
         <tr key={user._id}>
           <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
             <div className="flex items-center">
@@ -109,26 +160,38 @@ const Users = () => {
             <p className="whitespace-no-wrap text-gray-900">{user.email}</p>
           </td>
           <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-            <p className="whitespace-no-wrap text-gray-900">{user.createdAt}</p>
+            <p className="whitespace-no-wrap text-gray-900">
+              {new Date(user.createdAt).toLocaleDateString("vi-VN")}
+            </p>
           </td>
           <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-            <p className="whitespace-no-wrap text-gray-900">{user.totalPost}</p>
+            <p className="whitespace-no-wrap text-gray-900">
+              {user.totalReport}
+            </p>
           </td>
-          <td className="space-x-5 border-b border-gray-200 bg-white px-5 py-5 text-sm">
+          <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+            {user.isBan ? (
+              <span className="text-red-600">User has been banned</span>
+            ) : (
+              <span className="text-green-600">User is active</span>
+            )}
+          </td>
+          <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
             <button
               type="button"
-              className=" disabled:cursor-not-allowed disabled:opacity-70"
+              className="disabled:cursor-not-allowed disabled:opacity-70"
+              onClick={() =>
+                user.isBan
+                  ? handleUnbanUser(user._id)
+                  : handleBanUser(user._id, user.totalReport)
+              }
             >
-              <MdDelete color="red" fontSize={25}/>
+              {user.isBan ? (
+                <FaBan color="green" title="Unban User" fontSize={25} />
+              ) : (
+                <FaBan color="red" title="Ban User" fontSize={25} />
+              )}
             </button>
-            {user.totalPost >= 5 && (
-              <button
-                type="button"
-                className=" disabled:cursor-not-allowed disabled:opacity-70"
-              >
-                <FaBan color="yellow" fontSize={25}/>
-              </button>
-            )}
           </td>
         </tr>
       ))}

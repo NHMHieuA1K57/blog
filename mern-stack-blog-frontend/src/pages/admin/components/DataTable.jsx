@@ -1,6 +1,7 @@
 import { IoIosAddCircle } from "react-icons/io";
 import Pagination from "../../../components/Pagination";
 import { useNavigate } from "react-router-dom";
+import { FaRegSadCry } from "react-icons/fa";
 
 const DataTable = ({
   pageTitle,
@@ -86,7 +87,8 @@ const DataTable = ({
                   ) : data?.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="w-full py-10 text-center">
-                        No records found
+                      <FaRegSadCry size={50} color="gray" className="mx-auto" />
+                      <p className="mt-2 text-gray-500">No records found</p>
                       </td>
                     </tr>
                   ) : (

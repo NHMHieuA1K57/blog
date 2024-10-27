@@ -133,7 +133,7 @@ const ProfilePage = () => {
                 type="text"
                 id="name"
                 placeholder="Enter new name"
-                defaultValue={account?.user?.username}
+                defaultValue={account.user.name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>

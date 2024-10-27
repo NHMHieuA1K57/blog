@@ -57,7 +57,12 @@ async function loginAccount(req, res, next) {
 
     // Tạo token (JWT) cho tài khoản
     const token = jwt.sign(
-      { id: account._id, email: account.email,isAdmin:account.isAdmin, isBan : account.isBan }, // Payload chứa thông tin người dùng
+      {
+        id: account._id,
+        email: account.email,
+        isAdmin: account.isAdmin,
+        isBan: account.isBan,
+      }, // Payload chứa thông tin người dùng
       process.env.JWT_SECRET, // Secret key từ biến môi trường
       { expiresIn: "1h" } // Token sẽ hết hạn sau 1 giờ
     );
@@ -70,7 +75,7 @@ async function loginAccount(req, res, next) {
         email: account.email,
         name: account.name,
         role: account.isAdmin ? "Admin" : "User",
-        status : account.isBan ? "Ban" : "Active",
+        status: account.isBan ? "Ban" : "Active",
       },
     });
   } catch (error) {
@@ -102,6 +107,54 @@ async function updateProfile(req, res, next) {
     next(error);
   }
 }
+async function getUsers(req, res, next) {
+  try {
+    const accountWithRoleUsers = await Account.find({ isAdmin: false });
+    res.status(200).json({
+      message: "Get users success",
+      data: accountWithRoleUsers,
+    });
+  } catch (err) {
+    return next(err);
+  }
+}
+async function changeStatusBanUser(req, res, next) {
+  try {
+    const { id } = req.params;
 
-const AccountController = { createAccount, loginAccount ,updateProfile};
+    // Tìm user theo id
+    const user = await Account.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Thay đổi trạng thái isBan
+    user.isBan = !user.isBan;
+    await user.save();
+
+    const message = user.isBan ? "User banned successfully" : "User unbanned successfully";
+    res.status(200).json({ message, data: user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+}
+async function getUsersIsBan(req, res, next) {
+  try {
+    const accountWithRoleUsers = await Account.find({ isBan: true });
+    res.status(200).json({
+      message: "Get users success",
+      data: accountWithRoleUsers,
+    });
+  } catch (err) {
+    return next(err);
+  }
+}
+const AccountController = {
+  createAccount,
+  loginAccount,
+  updateProfile,
+  getUsers,
+  changeStatusBanUser,
+  getUsersIsBan
+};
 module.exports = AccountController;

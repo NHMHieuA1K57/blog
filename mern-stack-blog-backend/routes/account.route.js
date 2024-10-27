@@ -16,4 +16,13 @@ accountRoute.post("/api/login", async (req, res, next) => {
 accountRoute.patch("/api/updateProfile/:id",authenticationToken, async (req, res, next) => {
     AccountController.updateProfile(req, res, next);
 })
+accountRoute.get("/api/getUser",authenticationToken,authorizeAdmin, async (req, res, next) => {
+    AccountController.getUsers(req, res, next);
+})
+accountRoute.patch("/api/changeStatusBan/:id",authenticationToken, authorizeAdmin, async (req, res, next) => {
+    AccountController.changeStatusBanUser(req,res,next)
+})
+accountRoute.get("/api/getUserIsBaned",authenticationToken,authorizeAdmin, async (req, res, next) => {
+    AccountController.getUsersIsBan(req, res, next);
+})
 module.exports = accountRoute
