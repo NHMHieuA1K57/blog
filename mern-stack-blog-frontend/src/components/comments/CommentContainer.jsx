@@ -31,7 +31,7 @@ const CommentsContainer = ({
   useEffect(() => {
     fetchComments();
     // fetchCommentByPostId();
-  }, [comment]);
+  }, [comment.length, comment.content]);
 
   // const fetchComments = async () => {
   //   const data = await getCommentsData();
