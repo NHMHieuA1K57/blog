@@ -1,5 +1,5 @@
 import React from "react";
-import { FiMessageSquare, FiEdit2, FiTrash } from "react-icons/fi";
+import { FiMessageSquare, FiEdit2, FiTrash, FiFlag } from "react-icons/fi";
 
 import { images } from "../../constants";
 import CommentForm from "./CommentForm";
@@ -12,19 +12,29 @@ const Comment = ({
   affectedComment,
   setAffectedComment,
   addComment,
+  deleteComment,
+  updateComment,
   parentId = null,
   replies,
 }) => {
   const isUserLoggined = !!logginedUserId;
-  const commentBelongsToUser = comment.user._id === logginedUserId;
+  const commentBelongsToUser = comment.account?._id === logginedUserId;
   const isReplying =
     affectedComment &&
     affectedComment?.type === "replying" &&
-    affectedComment?._id === comment._id;
-  const repliedCommentId = parentId ? parentId : comment._id;
-  const replyOnUserId = comment.user._id;
+    affectedComment?._id === comment?._id;
+  const isEditing =
+    affectedComment &&
+    affectedComment?.type === "editing" &&
+    affectedComment?._id === comment?._id;
+  const repliedCommentId = parentId ? parentId : comment?._id;
+  const replyOnUserId = comment.user?._id;
   const userState = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const handleReport = () => {
+    // Add the logic for reporting the comment here
+    console.log(`Reported comment ID: ${comment?._id}`);
+  };
 
   return (
     <div
@@ -38,7 +48,7 @@ const Comment = ({
       />
       <div className="flex flex-1 flex-col">
         <h5 className="text-xs font-bold text-dark-hard lg:text-sm">
-          {comment.user.name}
+          {comment.account?._id}
         </h5>
         <span className="text-xs text-dark-light">
           {new Date(comment.createdAt).toLocaleDateString("en-US", {
@@ -49,23 +59,23 @@ const Comment = ({
           })}
         </span>
         <p className="mt-[10px] font-opensans text-dark-light">
-          {comment.desc}
+          {comment.content}
         </p>
 
-        {/* {isEditing && (
+        {isEditing && (
           <CommentForm
             btnLabel="Update"
             formSubmitHanlder={(value) => updateComment(value, comment._id)}
             formCancelHandler={() => setAffectedComment(null)}
-            initialText={comment.desc}
+            initialText={comment.content}
           />
-        )} */}
+        )}
         <div className="mt-3 mb-3 flex items-center gap-x-3 font-roboto text-sm text-dark-light">
           {isUserLoggined && (
             <button
               className="flex items-center space-x-2"
               onClick={() =>
-                setAffectedComment({ type: "replying", _id: comment._id })
+                setAffectedComment({ type: "replying", _id: comment?._id })
               }
             >
               <FiMessageSquare className="h-auto w-4" />
@@ -77,7 +87,7 @@ const Comment = ({
               <button
                 className="flex items-center space-x-2"
                 onClick={() =>
-                  setAffectedComment({ type: "editing", _id: comment._id })
+                  setAffectedComment({ type: "editing", _id: comment?._id })
                 }
               >
                 <FiEdit2 className="h-auto w-4" />
@@ -85,7 +95,7 @@ const Comment = ({
               </button>
               <button
                 className="flex items-center space-x-2"
-                // onClick={() => deleteComment(comment._id)}
+                 onClick={() => deleteComment(comment?._id)}
               >
                 <FiTrash className="h-auto w-4" />
                 <span>Delete</span>
@@ -93,6 +103,13 @@ const Comment = ({
             </>
           )}
         </div>
+        <button
+            className="flex items-center space-x-2 text-red-500"
+            onClick={handleReport}
+          >
+            <FiFlag className="h-auto w-4" />
+            <span>Report</span>
+          </button>
         {isReplying && (
           <CommentForm
             btnLabel={userState.userInfo ? "Reply" : "Login to rep comment"}
@@ -115,7 +132,9 @@ const Comment = ({
                 comment={reply}
                 logginedUserId={logginedUserId}
                 replies={[]}
-                parentId={comment._id}
+                deleteComment={deleteComment}
+                updateComment={updateComment}
+                parentId={comment?._id}
               />
             ))}
           </div>
