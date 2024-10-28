@@ -13,6 +13,7 @@ const Comment = ({
   setAffectedComment,
   addComment,
   deleteComment,
+  reportComment,
   updateComment,
   parentId = null,
   replies,
@@ -95,7 +96,7 @@ const Comment = ({
               </button>
               <button
                 className="flex items-center space-x-2"
-                 onClick={() => deleteComment(comment?._id)}
+                onClick={() => deleteComment(comment?._id)}
               >
                 <FiTrash className="h-auto w-4" />
                 <span>Delete</span>
@@ -104,12 +105,13 @@ const Comment = ({
           )}
         </div>
         <button
-            className="flex items-center space-x-2 text-red-500"
-            onClick={handleReport}
-          >
-            <FiFlag className="h-auto w-4" />
-            <span>Report</span>
-          </button>
+          className="flex items-center space-x-2 text-red-500"
+          onClick={() => reportComment(comment._id)} // Gọi hàm reportComment
+        >
+          <FiFlag className="h-auto w-4" />
+          <span>Report</span>
+        </button>
+
         {isReplying && (
           <CommentForm
             btnLabel={userState.userInfo ? "Reply" : "Login to rep comment"}
@@ -132,6 +134,7 @@ const Comment = ({
                 comment={reply}
                 logginedUserId={logginedUserId}
                 replies={[]}
+                reportComment={reportComment}
                 deleteComment={deleteComment}
                 updateComment={updateComment}
                 parentId={comment?._id}

@@ -16,9 +16,9 @@ const CommentsContainer = ({ className, logginedUserId, comments }) => {
   const userState = useSelector((state) => state.user);
   const navigate = useNavigate();
 
-    //! Lấy logginedUserId từ token
-    const token = userState?.userInfo?.token || localStorage.getItem("token");
-    logginedUserId = token ? jwtDecode(token).id : null;
+  //! Lấy logginedUserId từ token
+  const token = userState?.userInfo?.token || localStorage.getItem("token");
+  logginedUserId = token ? jwtDecode(token).id : null;
 
   //!Function
   useEffect(() => {
@@ -34,7 +34,7 @@ const CommentsContainer = ({ className, logginedUserId, comments }) => {
     try {
       const response = await axios.get("http://localhost:9999/comment/api/posts/671bc6413b323d9f2ed71a07/comments");
       const fetchedComments = response.data.data || [];
-    setComment(fetchedComments);
+      setComment(fetchedComments);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching comments:", error);
@@ -48,7 +48,7 @@ const CommentsContainer = ({ className, logginedUserId, comments }) => {
       navigate("/login");
       return;
     }
-  
+
     try {
       const token = userState?.userInfo?.token || localStorage.getItem("token")
       const response = await axios.post("http://localhost:9999/comment/api/comments", {
@@ -57,12 +57,12 @@ const CommentsContainer = ({ className, logginedUserId, comments }) => {
         parent: parent,
         replyOnUser: replyOnUser
       },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`, // Thêm token vào header
-        },
-      });
-  
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Thêm token vào header
+          },
+        });
+
       setComment([...comments, response.data.data]); // Thêm comment mới vào danh sách
     } catch (error) {
       console.error("Error adding comment:", error);
@@ -76,12 +76,12 @@ const CommentsContainer = ({ className, logginedUserId, comments }) => {
       const response = await axios.patch(`http://localhost:9999/comment/api/comments/${commentId}`, {
         content: value
       },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`, // Add token in headers
-          'Content-Type': 'application/json'
-        },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add token in headers
+            'Content-Type': 'application/json'
+          },
+        });
       setComment(comment.map((comment) =>
         comment._id === commentId ? response.data : comment
       ));
@@ -89,9 +89,35 @@ const CommentsContainer = ({ className, logginedUserId, comments }) => {
       console.error("Error updating comment:", error);
     }
   };
+  //report
+  const reportCommentHandler = async (commentId) => {
+    if (!userState.userInfo) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const token = userState?.userInfo?.token || localStorage.getItem("token");
+      const reason = prompt("Please provide a reason for reporting this comment:");
+      if (!reason) return; // Nếu không có lý do, hủy thao tác
+
+      await axios.post(`http://localhost:9999/comment/api/comments/${commentId}/report`, {
+        reason: reason,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Thêm token vào header
+        },
+      });
+
+      alert("Comment reported successfully");
+    } catch (error) {
+      console.error("Error reporting comment:", error);
+      alert("An error occurred while reporting the comment.");
+    }
+  };
 
   //! Delete Comment
-  const deleteCommentHandler = async (commentId) => { 
+  const deleteCommentHandler = async (commentId) => {
     try {
       const token = userState?.userInfo?.token || localStorage.getItem("token")
       await axios.delete(`http://localhost:9999/comment/api/comments/${commentId}`, {
@@ -148,16 +174,16 @@ const CommentsContainer = ({ className, logginedUserId, comments }) => {
       <div className="mt-8 space-y-4">
         {mainComment.map((comment) => (
           <Comment
-          key={comment?._id}
-          comment={comment}
-          logginedUserId={logginedUserId}
-          affectedComment={affectedComment}
-          setAffectedComment={setAffectedComment}
-          addComment={addCommentHandler}
-          // deleteComment={ deleteCommentHandler(comment._id)}
-          deleteComment={deleteCommentHandler}
-          updateComment={updateCommentHandler}
-          replies={getReplies(comment._id)}
+            key={comment?._id}
+            comment={comment}
+            logginedUserId={logginedUserId}
+            affectedComment={affectedComment}
+            setAffectedComment={setAffectedComment}
+            addComment={addCommentHandler}
+            deleteComment={deleteCommentHandler}
+            updateComment={updateCommentHandler}
+            reportComment={reportCommentHandler} // Truyền hàm vào đây
+            replies={getReplies(comment._id)}
           />
         ))}
       </div>

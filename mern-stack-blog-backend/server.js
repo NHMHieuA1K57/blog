@@ -21,7 +21,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyParser.json());
 app.use(cors({
-  origin: '*', 
+  origin: '*',
   methods: 'GET,POST,PUT,DELETE,PATCH',
   allowedHeaders: 'Content-Type,Authorization'
 }));
@@ -30,6 +30,7 @@ app.use(cors({
 app.get("/", async (req, res, next) => {
   res.status(200).json({ message: "Welcome to RESTFul API with NodeJs " });
 });
+
 app.use("/account", accountRoute);
 app.use("/comment", commentRoute);
 app.use('/blog', postRoute);
@@ -41,9 +42,9 @@ app.use(async (req, res, next) => {
   next(httpErrors.BadRequest("Bad Request "));
 });
 
- // kiem soat loi bat ki trong web server
- app.use(async (err, req, res, next) => {
-    //lay status code thuc te dang gap phai
+// kiem soat loi bat ki trong web server
+app.use(async (err, req, res, next) => {
+  //lay status code thuc te dang gap phai
   res.status(err.status || 500);
   res.json({
     status: err.status,
@@ -54,8 +55,7 @@ app.use(async (req, res, next) => {
 
 const HOST = process.env.HOST_NAME || "localhost";
 const PORT = process.env.PORT || 9999;
-app.listen(PORT, HOST , async() => {
-    console.log(`Server running at http://${HOST}:${PORT}`);
-    await DB.connectDB();
-  });
-  
+app.listen(PORT, HOST, async () => {
+  console.log(`Server running at http://${HOST}:${PORT}`);
+  await DB.connectDB();
+});

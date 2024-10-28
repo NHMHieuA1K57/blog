@@ -130,7 +130,7 @@ async function getAllComments(req, res, next) {
             .populate('post', 'title') // Populate post field to get post title
             .populate('replyOnUser', 'username') // Populate replyOnUser field to get username
             .exec();
-        
+
         res.status(200).json({
             message: "Comments fetched successfully",
             data: comments,
