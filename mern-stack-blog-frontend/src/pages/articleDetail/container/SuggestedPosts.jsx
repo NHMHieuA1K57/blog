@@ -6,7 +6,11 @@ function SuggestedPosts(props) {
   const { className, header, category } = props;
   const { data: posts } = useGetDataPosts();
 
-  const suggestedPosts = posts.filter((post) => post.category === category);
+  const suggestedPosts = posts.filter(
+    (post) =>
+      post.category.name === category.category && post._id !== category.id
+  );
+  console.log(category, "category");
 
   if (suggestedPosts.length === 0)
     return (
@@ -40,14 +44,12 @@ function SuggestedPosts(props) {
             />
             <div className="font-roboto text-sm font-medium text-dark-hard">
               <h3 className="font-roboto text-sm font-medium text-dark-hard md:text-base lg:text-lg">
-                <Link>{item.title}</Link>
+                <Link to={`/detail/${item._id}`} className="hover:text-primary">
+                  {item.title}
+                </Link>
               </h3>
               <span className="text-xs opacity-60">
-                {new Date(item.createAt).toLocaleDateString("en-US", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })}
+                {new Date(item.createdAt).toDateString()}
               </span>
             </div>
           </div>
