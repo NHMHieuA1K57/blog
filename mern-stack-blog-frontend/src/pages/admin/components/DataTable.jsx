@@ -1,5 +1,5 @@
 import { IoIosAddCircle } from "react-icons/io";
-import Pagination from "../../../components/Pagination";
+// import Pagination from "../../../components/Pagination";
 import { useNavigate } from "react-router-dom";
 import { pageUrls } from "../../../constants/pageUrls";
 import { FaRegSadCry } from "react-icons/fa";

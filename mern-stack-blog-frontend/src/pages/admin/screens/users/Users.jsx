@@ -8,7 +8,7 @@ import { FaSort } from "react-icons/fa";
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [setError] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [sortOrder, setSortOrder] = useState("asc"); // Trạng thái sắp xếp
 
@@ -35,7 +35,7 @@ const Users = () => {
     };
 
     fetchUsers();
-  }, []);
+  }, );
 
   // Hàm sắp xếp user theo tổng report
   const sortUsersByReports = () => {
