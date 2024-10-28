@@ -140,7 +140,26 @@ async function getAllComments(req, res, next) {
     }
 }
 
+// Get comments by post ID
+async function getCommentsByPost(req, res, next) {
+    const { postId } = req.params;
 
-const CommentController = { addComment, updateComment, deleteComment, reportComment, getReplies, getAllComments };
+    try {
+        const comments = await Comment.find({ post: postId })
+            .populate('account', 'username') // Populate to get the commenter's username
+            .populate('replyOnUser', 'username') // Populate to get the replied user's username, if applicable
+            .sort({ createdAt: -1 }) // Optionally sort by creation date, newest first
+
+        res.status(200).json({
+            message: "Comments fetched successfully",
+            data: comments,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+
+const CommentController = { addComment, updateComment, deleteComment, reportComment, getReplies, getAllComments, getCommentsByPost };
 
 module.exports = CommentController;
