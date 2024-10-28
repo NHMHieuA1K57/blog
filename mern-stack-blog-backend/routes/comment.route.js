@@ -36,5 +36,9 @@ commentRoute.get("/api/allComments", async (req, res, next) => {
     CommentController.getAllComments(req, res, next);
 });
 
+commentRoute.get("/api/posts/:postId/comments", async (req, res, next) => {
+    CommentController.getCommentsByPost(req, res, next);
+});
+
 
 module.exports = commentRoute;
