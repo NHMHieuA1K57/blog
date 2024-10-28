@@ -79,6 +79,12 @@ const CommentsContainer = ({ className, logginedUserId, comments }) => {
       const token = userState?.userInfo?.token || localStorage.getItem("token")
       const response = await axios.patch(`http://localhost:9999/comment/api/comments/${commentId}`, {
         content: value
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add token in headers
+          'Content-Type': 'application/json'
+        },
       });
       setComment(comment.map((comment) =>
         comment._id === commentId ? response.data : comment
