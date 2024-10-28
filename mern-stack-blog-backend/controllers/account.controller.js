@@ -153,8 +153,48 @@ async function forgotPassword(req, res, next) {
     res.status(500).json({ message: "Có lỗi xảy ra, vui lòng thử lại sau" });
   }
 }
+async function getUsers(req, res, next) {
+  try {
+    const accountWithRoleUsers = await Account.find({ isAdmin: false });
+    res.status(200).json({
+      message: "Get users success",
+      data: accountWithRoleUsers,
+    });
+  } catch (err) {
+    return next(err);
+  }
+}
+async function changeStatusBanUser(req, res, next) {
+  try {
+    const { id } = req.params;
+    // Tìm user theo id
+    const user = await Account.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    // Thay đổi trạng thái isBan
+    user.isBan = !user.isBan;
+    await user.save();
+
+    const message = user.isBan ? "User banned successfully" : "User unbanned successfully";
+    res.status(200).json({ message, data: user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+}
+async function getUsersIsBan(req, res, next) {
+  try {
+    const accountWithRoleUsers = await Account.find({ isBan: true });
+    res.status(200).json({
+      message: "Get users success",
+      data: accountWithRoleUsers,
+    });
+  } catch (err) {
+    return next(err);
+  }
+}
 
 
-
-const AccountController = { createAccount, loginAccount ,updateProfile, forgotPassword};
+const AccountController = { createAccount, loginAccount ,updateProfile, forgotPassword, getUsers, changeStatusBanUser, getUsersIsBan};
 module.exports = AccountController;

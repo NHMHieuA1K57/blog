@@ -4,7 +4,6 @@ const accountSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true,"Product name is required"],
-        unique: [true, "Product name is duplicate"]
     },
     avatar: {
         type: String,
@@ -33,6 +32,10 @@ const accountSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    totalReport :{
+        type: Number,
+        default : 0
+    }
 },{
     timestamps: true,
     versionKey: false 
