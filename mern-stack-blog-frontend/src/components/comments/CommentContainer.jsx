@@ -30,30 +30,32 @@ const CommentsContainer = ({
   //!Function
   useEffect(() => {
     fetchComments();
-    fetchCommentByPostId();
-  }, []);
+    // fetchCommentByPostId();
+  }, [comment]);
 
   // const fetchComments = async () => {
   //   const data = await getCommentsData();
   //   setComment(data);
   // };
 
-  const fetchCommentByPostId = async () => {
+  // const fetchCommentByPostId = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:9999/comment/api/posts/${postId}/comments`
+  //     );
+  //     const fetchedComments = response.data.data || [];
+  //     setCommentByPostId(fetchedComments);
+  //   } catch (error) {
+  //     console.error("Error fetching comments:", error);
+  //   }
+  // };
+
+  const fetchComments = async () => {
+    console.log("postId", postId);
+    
     try {
       const response = await axios.get(
         `http://localhost:9999/comment/api/posts/${postId}/comments`
-      );
-      const fetchedComments = response.data.data || [];
-      setCommentByPostId(fetchedComments);
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    }
-  };
-
-  const fetchComments = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:9999/comment/api/posts/671bc6413b323d9f2ed71a07/comments"
       );
       const fetchedComments = response.data.data || [];
       setComment(fetchedComments);
@@ -80,7 +82,7 @@ const CommentsContainer = ({
       const response = await axios.post(
         "http://localhost:9999/comment/api/comments",
         {
-          postId: "671bc6413b323d9f2ed71a07", // ID của bài post
+          postId: postId, // ID của bài post
           content: value,
           parent: parent,
           replyOnUser: replyOnUser,
