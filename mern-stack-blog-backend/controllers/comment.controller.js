@@ -115,7 +115,7 @@ async function getReplies(req, res, next) {
     const { commentId } = req.params;
 
     try {
-        const replies = await Comment.find({ parent: commentId }).populate('account', 'username');
+        const replies = await Comment.find({ parent: commentId }).populate('account', 'name');
         res.status(200).json({ message: "Replies fetched successfully", data: replies });
     } catch (err) {
         next(err);
@@ -126,9 +126,9 @@ async function getReplies(req, res, next) {
 async function getAllComments(req, res, next) {
     try {
         const comments = await Comment.find()
-            .populate('account', 'username') // Populate account field to get username
+            .populate('account', 'name') // Populate account field to get username
             .populate('post', 'title') // Populate post field to get post title
-            .populate('replyOnUser', 'username') // Populate replyOnUser field to get username
+            .populate('replyOnUser', 'name') // Populate replyOnUser field to get username
             .exec();
         
         res.status(200).json({
@@ -146,8 +146,8 @@ async function getCommentsByPost(req, res, next) {
 
     try {
         const comments = await Comment.find({ post: postId })
-            .populate('account', 'username') // Populate to get the commenter's username
-            .populate('replyOnUser', 'username') // Populate to get the replied user's username, if applicable
+            .populate('account', 'name') // Populate to get the commenter's username
+            .populate('replyOnUser', 'name') // Populate to get the replied user's username, if applicable
             .sort({ createdAt: -1 }) // Optionally sort by creation date, newest first
 
         res.status(200).json({

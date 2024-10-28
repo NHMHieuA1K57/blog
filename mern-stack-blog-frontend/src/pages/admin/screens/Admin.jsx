@@ -56,7 +56,7 @@ const Admin = () => {
           {comments.map((comment) => (
           <li key={comment._id} className="flex items-center gap-2">
             <div className="comment-text">
-              <span>{comment.account._id}</span>
+              <span>{comment.account.name}</span>
               <p>{comment.content}</p>
             </div>
             <Tooltip content="View">

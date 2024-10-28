@@ -48,7 +48,7 @@ const Comment = ({
       />
       <div className="flex flex-1 flex-col">
         <h5 className="text-xs font-bold text-dark-hard lg:text-sm">
-          {comment.account?._id}
+          {comment.account?.name}
         </h5>
         <span className="text-xs text-dark-light">
           {new Date(comment.createdAt).toLocaleDateString("en-US", {
