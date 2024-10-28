@@ -4,7 +4,6 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { pageUrls } from "../constants/pageUrls";
 
 export const Wrapper = ({ children, roles }) => {
-  const navigate = useNavigate();
   const userState = useSelector((state) => state.user);
   console.log("userState", userState)
 

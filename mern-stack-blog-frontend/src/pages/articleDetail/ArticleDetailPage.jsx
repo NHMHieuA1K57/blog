@@ -47,7 +47,7 @@ const ArticleDetailPage = () => {
           <SuggestedPosts
             header="Latest Article"
             className="mt-8 lg:mt-0 lg:max-w-xs"
-            category={postDetail?.category}
+            category={postDetail}
           />
           <SocialShareButtons className="mt-8 lg:mt-0" />
         </div>

@@ -47,7 +47,9 @@ async function createPost(req, res, next) {
       },
     });
   } catch (error) {
-    next(error);
+    next({
+      message: error.message,
+    });
   }
 }
 
@@ -102,7 +104,9 @@ async function updatePost(req, res, next) {
       },
     });
   } catch (error) {
-    next(error);
+    next({
+      message: error.message,
+    });
   }
 }
 
@@ -119,7 +123,9 @@ const deletePost = async (req, res) => {
 
     res.status(200).json({ message: "Bài viết đã được xóa thành công" });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi khi xóa bài viết", error: error.message });
+    next({
+      message: error.message,
+    });
   }
 };
 
@@ -147,7 +153,9 @@ async function detailPost(req, res, next) {
       }
     });
   } catch (error) {
-    next(error);
+    next({
+      message: error.message,
+    });
   }
 }
 
@@ -162,7 +170,9 @@ async function listPost(req, res, next) {
 
     res.status(200).json(posts);
   } catch (error) {
-    next(error);
+    next({
+      message: error.message,
+    });
   }
 }
 
@@ -195,8 +205,9 @@ async function searchPost(req, res, next) {
       .limit(Number(limit));
     res.status(200).json(posts);
   } catch (error) {
-    console.error("Lỗi khi tìm kiếm bài viết:", error);
-    next(error);
+    next({
+      message: error.message,
+    });
   }
 }
 

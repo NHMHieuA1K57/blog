@@ -44,6 +44,10 @@ const routes = [
         path: pageUrls.ADD_NEW_BLOG,
         component: BlogPostForm,
       },
+      {
+        path: pageUrls.EDIT_BLOG,
+        component: BlogPostForm,
+      },
     ],
   },
   {

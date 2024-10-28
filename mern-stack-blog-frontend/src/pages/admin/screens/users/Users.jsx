@@ -35,7 +35,7 @@ const Users = () => {
     };
 
     fetchUsers();
-  }, );
+  }, [token]);
 
   // Hàm sắp xếp user theo tổng report
   const sortUsersByReports = () => {

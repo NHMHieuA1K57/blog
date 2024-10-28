@@ -6,35 +6,42 @@ import { pageUrls } from "../../../../constants/pageUrls";
 import useGetDataPosts from "../../../../hooks/useGetDataPosts";
 import DataTable from "../../components/DataTable";
 import LoadingSpinner from "../../../../components/LoadingSpinner";
+import axios from "axios";
+import { useState } from "react";
+import BlogPostForm from "./addNewBlog";
+import Alert from "../../../../components/Alert";
 
 const ManagePosts = () => {
   const navigate = useNavigate();
-  // const {
-  //   userState,
-  //   currentPage,
-  //   searchKeyword,
-  //   data: postsData,
-  //   isLoading,
-  //   isFetching,
-  //   isLoadingDeleteData,
-  //   queryClient,
-  //   searchKeywordHandler,
-  //   submitSearchKeywordHandler,
-  //   deleteDataHandler,
-  //   setCurrentPage,
-  // } = useDataTable({
-  //   dataQueryFn: () => getAllPosts(searchKeyword, currentPage),
-  //   dataQueryKey: "posts",
-  //   deleteDataMessage: "Post is deleted",
-  //   mutateDeleteFn: ({ slug, token }) => {
-  //     return deletePost({
-  //       slug,
-  //       token,
-  //     });
-  //   },
-  // });
+  const [alert, setAlert] = useState(null);
+  const token = localStorage.getItem("token");
+  const { data: posts, isLoading, refetch } = useGetDataPosts();
 
-  const {data: posts, isLoading} = useGetDataPosts();
+  const handleDeletePost = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this post?"
+    );
+
+    if (!confirmDelete) return;
+    try {
+      await axios.delete(`http://localhost:9999/blog/delete-post/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      refetch();
+      setAlert({
+        type: "success",
+        message: `Delete post successfully!`,
+      });
+    } catch (error) {
+      console.error(error);
+      setAlert({
+        type: "error",
+        message: error.response?.data?.message || "Failed to delete post.",
+      });
+    }
+  };
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -42,6 +49,13 @@ const ManagePosts = () => {
 
   return (
     <>
+      {alert && (
+        <Alert
+          type={alert.type}
+          message={alert.message}
+          onClose={() => setAlert(null)}
+        />
+      )}
       <DataTable
         type="posts"
         pageTitle="Manage Posts"
@@ -64,7 +78,7 @@ const ManagePosts = () => {
             <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <Link to={`/blog/${post._id}`} className="relative block">
+                  <Link to={`/detail/${post._id}`} className="relative block">
                     <img
                       src={post.images[0] || images.Post1Image}
                       alt={post.title}
@@ -80,7 +94,7 @@ const ManagePosts = () => {
               </div>
             </td>
             <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p className="whitespace-no-wrap text-gray-900 font-bold">
+              <p className="whitespace-no-wrap font-bold text-gray-900">
                 {post.category.name}
               </p>
             </td>
@@ -95,14 +109,13 @@ const ManagePosts = () => {
             </td>
             <td className="space-x-5 border-b border-gray-200 bg-white px-5 py-5 text-sm">
               <button className=" disabled:cursor-not-allowed disabled:opacity-70">
-                <MdEdit
-                  color="blue"
-                  onClick={() => navigate(pageUrls.ADD_NEW_BLOG)}
-                  fontSize={25}
-                />
+                <Link to={`/admin/editBlog/${post._id}`}>
+                  <MdEdit color="blue" fontSize={25} />
+                </Link>
               </button>
               <button
                 type="button"
+                onClick={() => handleDeletePost(post._id)}
                 className=" disabled:cursor-not-allowed disabled:opacity-70"
               >
                 <MdDelete color="red" fontSize={25} />

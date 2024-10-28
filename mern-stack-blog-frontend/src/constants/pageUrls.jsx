@@ -14,6 +14,7 @@ export const pageUrls = {
   CATEGORIES: "/admin/categories/manage",
   USERS: "/admin/users/manage",
   ADD_NEW_BLOG: "/admin/addNewBlog",
+  EDIT_BLOG: "/admin/editBlog/:postId",
   
   BLOG_DETAIL: "/detail/:id",
   NOT_FOUND: "/404",

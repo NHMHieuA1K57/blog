@@ -1,13 +1,22 @@
-import React, { useState } from "react";
-import "./Admin.css";
-import { FaRegEye, FaBell, FaCheckDouble } from "react-icons/fa";
 import { IconButton, Tooltip } from "@material-tailwind/react";
-import { MdDelete, MdModeEdit } from "react-icons/md";
+import React, { useState } from "react";
+import { FaBell, FaCheckDouble, FaRegEye } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 import { images } from "../../../constants";
+import { pageUrls } from "../../../constants/pageUrls";
+import useGetDataPosts from "../../../hooks/useGetDataPosts";
+import "./Admin.css";
 
 const Admin = () => {
   const [showPopUp, setShowPopUp] = useState(false);
+  const { data, isLoading } = useGetDataPosts();
+  const navigate = useNavigate();
+  const top3Posts = data.slice(0, 3);
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
   return (
     <div className="dashboard-container">
       <div className="sidebar mt-8">
@@ -84,7 +93,7 @@ const Admin = () => {
                       />
                       <div>
                         <span>Mehbubur just up a post</span>
-                        <p className="text-sm text-gray-500">Thursday 3:12pm</p>  
+                        <p className="text-sm text-gray-500">Thursday 3:12pm</p>
                       </div>
                     </div>
                     <span className="text-sm text-gray-500">Today</span>
@@ -124,75 +133,36 @@ const Admin = () => {
             )}
           </div>
         </div>
-
-        <div className="posts-section">
-          <h3>Recent Posts</h3>
-          <ul>
-            {[
-              {
-                email: "duytran@gmail.com",
-                date: "October 25th, 2020 08:55 AM",
-                title:
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-                description:
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-                image: images.userImage,
-              },
-              {
-                email: "duytran@gmail.com",
-                date: "October 25th, 2020 08:55 AM",
-                title: "Lorem ipsum dolor sit amet, consectetur adipiscing",
-                description:
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-                image: images.userImage,
-              },
-              {
-                email: "duytran@gmail.com",
-                date: "October 25th, 2020 08:55 AM",
-                title: "Lorem ipsum dolor sit amet, consectetur adipiscing",
-                description:
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-                image: images.userImage,
-              },
-            ].map((post, index) => (
-              <li
-                key={index}
-                className="post-item flex items-center justify-between gap-2"
-              >
-                <div className="post-info flex items-center gap-3">
-                  <img
-                    src={post.image}
-                    alt="user"
-                    className="h-9 w-9 rounded-full"
-                  />
-                  <div className="post-text">
-                    <span>{post.email}</span>
-                    <p>{post.date}</p>
-                    <h4>{post.title}</h4>
-                    <p>{post.description}</p>
+        <div className="sidebar" style={{ width: "100%" }}>
+          <div className="posts-section">
+            <h3>Recent Posts</h3>
+            <ul>
+              {top3Posts.map((post, index) => (
+                <li
+                  key={index}
+                  className="post-item flex items-center justify-between gap-2"
+                >
+                  <div className="post-info flex items-center gap-3">
+                    <img
+                      src={post.images[0]}
+                      alt="user"
+                      className="h-9 w-9 rounded-full"
+                    />
+                    <div className="post-text">
+                      <p>{new Date(post.createdAt).toLocaleDateString()}</p>
+                      <h4>{post.title}</h4>
+                    </div>
                   </div>
-                </div>
-                {/* <div className="post-actions flex gap-2">
-                  <Tooltip content="View">
-                    <IconButton variant="text" className="flex justify-center">
-                      <FaRegEye className="h-4 w-4" color="blue" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip content="Edit">
-                    <IconButton variant="text" className="flex justify-center">
-                      <MdModeEdit className="h-4 w-4" color="yellow" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip content="Delete">
-                    <IconButton variant="text" className="flex justify-center">
-                      <MdDelete className="h-4 w-4" color="red" />
-                    </IconButton>
-                  </Tooltip>
-                </div> */}
-              </li>
-            ))}
-          </ul>
-          <button className="view-more-btn">View More</button>
+                </li>
+              ))}
+            </ul>
+            <button
+              className="view-more-btn"
+              onClick={() => navigate(pageUrls.POSTS)}
+            >
+              View More
+            </button>
+          </div>
         </div>
       </div>
     </div>
