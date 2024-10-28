@@ -35,10 +35,6 @@ const CommentsContainer = ({ className, logginedUserId, comments }) => {
       const response = await axios.get("http://localhost:9999/comment/api/posts/671bc6413b323d9f2ed71a07/comments");
       const fetchedComments = response.data.data || [];
     setComment(fetchedComments);
-    console.log("Fetched comments after setting state:", fetchedComments, typeof fetchedComments);
-      console.log("response.data.data",response, response.data, response.data.data, typeof response.data.data);
-      
-      console.log("comment", comments, typeof comments);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching comments:", error);
@@ -95,9 +91,7 @@ const CommentsContainer = ({ className, logginedUserId, comments }) => {
   };
 
   //! Delete Comment
-  const deleteCommentHandler = async (commentId) => {
-    console.log("ggggggg");
-    
+  const deleteCommentHandler = async (commentId) => { 
     try {
       const token = userState?.userInfo?.token || localStorage.getItem("token")
       await axios.delete(`http://localhost:9999/comment/api/comments/${commentId}`, {
