@@ -3,7 +3,7 @@ import { FiUpload, FiX } from "react-icons/fi";
 import Select from "react-select";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import Editor from "../../../../components/editor/Editor";
+// import Editor from "../../../../components/editor/Editor";
 import useGetDataCategory from "../../../../hooks/useGetDataCategory";
 import axios from "axios";
 
@@ -75,8 +75,6 @@ const BlogPostForm = () => {
       console.error("Error response data:", error.response?.data); 
       alert("Failed to create post.");
     }
-  
-   
   };
   
   
@@ -163,7 +161,7 @@ const BlogPostForm = () => {
                         errors.title ? "border-red-500" : ""
                       }`}
                       placeholder="Enter your blog post title"
-                      maxLength={100}
+                      maxLength={5000}
                     />
                   )}
                 </Field>
