@@ -1,5 +1,5 @@
 import { IconButton, Tooltip } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaBell, FaCheckDouble, FaRegEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../../components/LoadingSpinner";
@@ -7,49 +7,65 @@ import { images } from "../../../constants";
 import { pageUrls } from "../../../constants/pageUrls";
 import useGetDataPosts from "../../../hooks/useGetDataPosts";
 import "./Admin.css";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Admin = () => {
   const [showPopUp, setShowPopUp] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [isLoadingComments, setIsLoadingComments] = useState(true);
+  const userState = useSelector((state) => state.user);
   const { data, isLoading } = useGetDataPosts();
   const navigate = useNavigate();
   const top3Posts = data.slice(0, 3);
 
+  const token = userState?.userInfo?.token || localStorage.getItem("token");
+
+  useEffect(() => {
+    // Hàm gọi API lấy tất cả comments
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get("http://localhost:9999/comment/api/allComments", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Thêm token vào header
+          },
+        });
+        setComments(response.data.data);
+      } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchComments();
+  }, [token]);
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
+
   return (
     <div className="dashboard-container">
       <div className="sidebar mt-8">
         <h2>Dashboard</h2>
         <div className="comments-section">
           <h3>Comments</h3>
-          <p className="mb-5 text-red-500">You have 34 comments</p>
+          <p className="mb-5 text-red-500">You have {comments.length} comments</p>
           <ul className="flex flex-col gap-5">
-            {[
-              "Username 1",
-              "Username 2",
-              "Username 3",
-              "Username 4",
-              "Username 5",
-              "Username 6",
-            ].map((user, index) => (
-              <li key={index} className="flex items-center gap-2">
-                <img
-                  src={images.userImage}
-                  alt="user"
-                  className="h-9 w-9 rounded-full"
-                />
-                <div className="comment-text">
-                  <span>{user}</span>
-                  <p>Lorem ipsum dolor sit</p>
-                </div>
-                <Tooltip content="View">
-                  <IconButton variant="text" className="flex justify-center">
-                    <FaRegEye className="h-4 w-4" color="blue" />
-                  </IconButton>
-                </Tooltip>
-              </li>
-            ))}
+          {comments.map((comment) => (
+          <li key={comment._id} className="flex items-center gap-2">
+            <div className="comment-text">
+              <span>{comment.account._id}</span>
+              <p>{comment.content}</p>
+            </div>
+            <Tooltip content="View">
+              <IconButton variant="text" className="flex justify-center">
+                <FaRegEye className="h-4 w-4" color="blue" />
+              </IconButton>
+            </Tooltip>
+          </li>
+        ))}
           </ul>
           <button className="view-more-btn">View More</button>
         </div>
