@@ -57,7 +57,7 @@ const BlogPage = () => {
                 post={{
                   id: post._id,
                   title: post.title,
-                  description: post.content.split(" ").slice(0, 100).join(" ") + (post.content.split(" ").length > 100 ? "..." : ""),
+                  description: post.content.split(" ").slice(0, 60).join(" ") + (post.content.split(" ").length > 60 ? "..." : ""),
                   image: post.images[0],
                   author: {
                     name: post.author.name,

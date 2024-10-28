@@ -13,7 +13,7 @@ const Articles = () => {
   if (isLoading) return <LoadingSpinner />;
 
   const truncateText = (text) => {
-    return text.split(" ").slice(0, 100).join(" ") + "...";
+    return text.split(" ").slice(0, 50).join(" ") + "...";
   };
 
   return (
