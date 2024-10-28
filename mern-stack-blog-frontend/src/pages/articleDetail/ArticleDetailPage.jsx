@@ -41,7 +41,7 @@ const ArticleDetailPage = () => {
           <div className="mt-4 text-dark-soft">
             <p className="leading-7">{postDetail?.content}</p>
           </div>
-          <CommentContainer className={"mt-10"} logginedUserId="a" />
+          <CommentContainer postId={id} className={"mt-10"} logginedUserId="a" />
         </article>
         <div className="flex flex-col gap-5">
           <SuggestedPosts
