@@ -9,7 +9,7 @@ const accountRoute = require("./routes/account.route");
 const commentRoute = require("./routes/comment.route");
 const postRoute = require('./routes/postRoute');
 const categoryRoute = require('./routes/categoryRoute')
-
+const notificationRoute = require("./routes/notification.route")
 require("dotenv").config();
 
 // khoi tao web server bang express
@@ -30,7 +30,7 @@ app.use(cors({
 app.get("/", async (req, res, next) => {
   res.status(200).json({ message: "Welcome to RESTFul API with NodeJs " });
 });
-
+app.use("/notification", notificationRoute)
 app.use("/account", accountRoute);
 app.use("/comment", commentRoute);
 app.use('/blog', postRoute);
