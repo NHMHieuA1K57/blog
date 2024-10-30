@@ -2,6 +2,7 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const Account = require("../models/account.model");
 const {AccountController} = require("../controllers");
+const { upload } = require('../config/cloudinaryConfig');
 const {authenticationToken,authorizeAdmin} = require("../authMiddleware/authenticationToken");
 
 const accountRoute = express.Router();
@@ -15,7 +16,7 @@ accountRoute.post("/api/login", async (req, res, next) => {
     AccountController.loginAccount(req, res, next);
 })
 
-accountRoute.patch("/api/updateProfile/:id",authenticationToken, async (req, res, next) => {
+accountRoute.patch("/api/updateProfile/:id",authenticationToken,upload.array('images', 5), async (req, res, next) => {
     AccountController.updateProfile(req, res, next);
 })
 

@@ -145,8 +145,7 @@ const Users = () => {
               <div className="flex-shrink-0">
                 <a href="/" className="relative block">
                   <img
-                    src={images.userImage}
-                    alt={user.name}
+                    src={user.avatar || images.userImage}
                     className="mx-auto aspect-square w-10 rounded-lg object-cover"
                   />
                 </a>
