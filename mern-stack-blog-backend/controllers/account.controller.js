@@ -1,8 +1,9 @@
 const Account = require("../models/account.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const nodemailer = require('nodemailer');
-require('dotenv').config();
+const nodemailer = require("nodemailer");
+const { uploadToCloudinary } = require("../config/cloudinaryConfig");
+require("dotenv").config();
 async function createAccount(req, res, next) {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
@@ -58,7 +59,12 @@ async function loginAccount(req, res, next) {
 
     // Tạo token (JWT) cho tài khoản
     const token = jwt.sign(
-      { id: account._id, email: account.email,isAdmin:account.isAdmin, isBan : account.isBan }, // Payload chứa thông tin người dùng
+      {
+        id: account._id,
+        email: account.email,
+        isAdmin: account.isAdmin,
+        isBan: account.isBan,
+      }, // Payload chứa thông tin người dùng
       process.env.JWT_SECRET, // Secret key từ biến môi trường
       { expiresIn: "1h" } // Token sẽ hết hạn sau 1 giờ
     );
@@ -68,10 +74,12 @@ async function loginAccount(req, res, next) {
       message: "Login successful!",
       token,
       user: {
+        id: account._id,
         email: account.email,
         name: account.name,
         role: account.isAdmin ? "Admin" : "User",
-        status : account.isBan ? "Ban" : "Active",
+        status: account.isBan ? "Ban" : "Active",
+        profileImage: account.avatar,
       },
     });
   } catch (error) {
@@ -82,8 +90,9 @@ async function loginAccount(req, res, next) {
 
 async function updateProfile(req, res, next) {
   try {
+    // console.log(req.files)
     const { name, password } = req.body;
-    const account = await Account.findById(req.user.id); // Sử dụng req.user.id
+    const account = await Account.findById(req.params.id); // Sử dụng req.user.id
 
     if (!account) {
       return res.status(404).json({ message: "Account not found" });
@@ -96,7 +105,14 @@ async function updateProfile(req, res, next) {
       const salt = await bcrypt.genSalt(10);
       account.password = await bcrypt.hash(password, salt);
     }
-
+    // Xử lý ảnh upload (nếu có ảnh trong req.files)
+    if (req.files && req.files.length > 0) {
+      const uploadPromises = req.files.map((file) =>
+        uploadToCloudinary(file.buffer, "SDN302")
+      );
+      const images = await Promise.all(uploadPromises);
+      account.avatar = images[0]; // Lưu ảnh đầu tiên làm ảnh đại diện (nếu cần nhiều ảnh có thể thay đổi)
+    }
     await account.save();
     res.status(200).json({ message: "Update profile success", data: account });
   } catch (error) {
@@ -116,15 +132,12 @@ async function forgotPassword(req, res, next) {
       return res.status(404).json({ message: "Người dùng không tồn tại" });
     }
 
-    
     const newPassword = Math.random().toString(36).slice(-8);
     console.log("Mật khẩu mới:", newPassword);
 
-   
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-   
     account.password = hashedPassword;
     await account.save();
 
@@ -172,12 +185,14 @@ async function changeStatusBanUser(req, res, next) {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    
+
     // Thay đổi trạng thái isBan
     user.isBan = !user.isBan;
     await user.save();
 
-    const message = user.isBan ? "User banned successfully" : "User unbanned successfully";
+    const message = user.isBan
+      ? "User banned successfully"
+      : "User unbanned successfully";
     res.status(200).json({ message, data: user });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -195,6 +210,13 @@ async function getUsersIsBan(req, res, next) {
   }
 }
 
-
-const AccountController = { createAccount, loginAccount ,updateProfile, forgotPassword, getUsers, changeStatusBanUser, getUsersIsBan};
+const AccountController = {
+  createAccount,
+  loginAccount,
+  updateProfile,
+  forgotPassword,
+  getUsers,
+  changeStatusBanUser,
+  getUsersIsBan,
+};
 module.exports = AccountController;
