@@ -210,6 +210,34 @@ async function searchPost(req, res, next) {
     });
   }
 }
+async function getPostsByCate(req, res, next) {
+  
+  try {
+    const {categoryId} = req.params;
+    const categoryExists = await Category.findById(categoryId);
+    if (!categoryExists) {
+      return res.status(404).json({
+        success: false,
+        message: "Category không tồn tại",
+      });
+    }
+
+    const posts = await Post.find({ category: categoryId })
+    .select("title images")
+    .sort({ createdAt: -1 }) 
+    .limit(10); 
+
+  res.status(200).json({
+    success: true,
+    data: posts,
+  });
+  } catch (error) {
+    next({
+      message: error.message,
+    });
+  }
+  
+}
 
 const PostController =
 {
@@ -219,5 +247,6 @@ const PostController =
   detailPost,
   listPost,
   searchPost,
+  getPostsByCate
 };
 module.exports = PostController;
