@@ -34,7 +34,7 @@ const Admin = () => {
       } catch (error) {
         console.error("Lỗi khi gọi API:", error);
       } finally {
-        setIsLoading(false);
+        isLoading(false);
       }
     };
 
@@ -53,19 +53,19 @@ const Admin = () => {
           <h3>Comments</h3>
           <p className="mb-5 text-red-500">You have {comments.length} comments</p>
           <ul className="flex flex-col gap-5">
-          {comments.map((comment) => (
-          <li key={comment._id} className="flex items-center gap-2">
-            <div className="comment-text">
-              <span>{comment.account.name}</span>
-              <p>{comment.content}</p>
-            </div>
-            <Tooltip content="View">
-              <IconButton variant="text" className="flex justify-center">
-                <FaRegEye className="h-4 w-4" color="blue" />
-              </IconButton>
-            </Tooltip>
-          </li>
-        ))}
+            {comments.map((comment) => (
+              <li key={comment._id} className="flex items-center gap-2">
+                <div className="comment-text">
+                  <span>{comment.account.name}</span>
+                  <p>{comment.content}</p>
+                </div>
+                <Tooltip content="View">
+                  <IconButton variant="text" className="flex justify-center">
+                    <FaRegEye className="h-4 w-4" color="blue" />
+                  </IconButton>
+                </Tooltip>
+              </li>
+            ))}
           </ul>
           <button className="view-more-btn">View More</button>
         </div>

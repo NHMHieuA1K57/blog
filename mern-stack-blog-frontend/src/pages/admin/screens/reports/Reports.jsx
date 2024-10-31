@@ -1,210 +1,82 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { images } from "../../../../constants";
-import { comments } from "../../../../constants/dataMock";
 import DataTable from "../../components/DataTable";
 import { MdDelete } from "react-icons/md";
+import axios from "axios";
 
 const Reports = () => {
-  // const {
-  //   userState,
-  //   currentPage,
-  //   searchKeyword,
-  //   data: commentsData,
-  //   isLoading,
-  //   isFetching,
-  //   isLoadingDeleteData,
-  //   queryClient,
-  //   searchKeywordHandler,
-  //   submitSearchKeywordHandler,
-  //   deleteDataHandler,
-  //   setCurrentPage,
-  // } = useDataTable({
-  //   dataQueryFn: () =>
-  //     getAllComments(userState.userInfo.token, searchKeyword, currentPage),
-  //   dataQueryKey: "comments",
-  //   deleteDataMessage: "Comment is deleted",
-  //   mutateDeleteFn: ({ slug, token }) => {
-  //     return deleteComment({
-  //       commentId: slug,
-  //       token,
-  //     });
-  //   },
-  // });
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // const {
-  //   mutate: mutateUpdateCommentCheck,
-  //   isLoading: isLoadingUpdateCommentCheck,
-  // } = useMutation({
-  //   mutationFn: ({ token, check, commentId }) => {
-  //     return updateComment({ token, check, commentId });
-  //   },
-  //   onSuccess: (data) => {
-  //     queryClient.invalidateQueries(["comments"]);
-  //     toast.success(
-  //       data?.check ? "CComment is approved" : "Comment is not approved"
-  //     );
-  //   },
-  //   onError: (error) => {
-  //     toast.error(error.message);
-  //     console.log(error);
-  //   },
-  // });
+  useEffect(() => {
+    const fetchReportedComments = async () => {
+      try {
+        const response = await axios.get('http://localhost:9999/api/comments/reports');
+        setReports(response.data);
+      } catch (error) {
+        console.error("Error fetching reports:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReportedComments();
+  }, []);
+
+  const handleDelete = async (commentId) => {
+    try {
+      await axios.delete(`http://localhost:9999/api/comments/${commentId}`);
+      setReports((prevReports) => prevReports.filter((report) => report._id !== commentId));
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    }
+  };
 
   return (
     <DataTable
       pageTitle="Manage Reports"
       dataListName="Reports"
       searchInputPlaceHolder="Search Report..."
-      // searchKeywordOnSubmitHandler={submitSearchKeywordHandler}
-      // searchKeywordOnChangeHandler={searchKeywordHandler}
-      // searchKeyword={searchKeyword}
       tableHeaderTitleList={[
-        "Name",
+        "User",
         "Content",
-        "In report to comment",
+        "Related Post",
         "Created At",
         "Action",
       ]}
-      // isFetching={isFetching}
-      // isLoading={isLoading}
-      data={comments}
-      // setCurrentPage={setCurrentPage}
-      // currentPage={currentPage}
-      // headers={commentsData?.headers}
+      isLoading={loading}
     >
-      {comments.map((comment, index) => (
+      {reports.map((report, index) => (
         <tr key={index}>
           <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <a href="/" className="relative block">
-                  <img
-                    src={images.userImage}
-                    alt={comment.name}
-                    className="mx-auto aspect-square w-10 rounded-lg object-cover"
-                  />
-                </a>
-              </div>
-              <div className="ml-3">
-                <p className="whitespace-no-wrap text-gray-900">
-                  {comment.name}
-                </p>
-              </div>
-            </div>
+            <p className="text-gray-900">{report.account?.name || "Unknown User"}</p>
           </td>
           <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-            {comment?.replyOnUser !== null && (
-              <p className="whitespace-no-wrap text-gray-900">
-                In reply to{" "}
-                <Link
-                  // to={`/blog/${comment?.post?.slug}/#comment-${comment?._id}`}
-                  className="text-blue-500"
-                >
-                  {comment?.replyOnUser?.name}
-                </Link>
-              </p>
-            )}
-            <p className="whitespace-no-wrap text-gray-900">{comment?.desc}</p>
+            <p className="text-gray-900">{report.content}</p>
           </td>
           <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-            <p className="whitespace-no-wrap text-gray-900">
-              <Link
-                // to={`/blog/${comment?.post?.slug}`}
-                to={`/blog/123`}
-                className="text-blue-500"
-              >
-                {comment?.post?.title}
-              </Link>
-            </p>
+            <Link to={`/detail/${report.post._id}`} className="text-blue-500">
+              {report.post?.title || "Unknown Post"}
+            </Link>
           </td>
           <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-            <p className="whitespace-no-wrap text-gray-900">
-              {new Date(comment.createdAt).toLocaleDateString("en-US", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "2-digit",
-                hour: "numeric",
-                minute: "numeric",
-              })}
-            </p>
+            {new Date(report.createdAt).toLocaleDateString("en-US", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+              hour: "numeric",
+              minute: "numeric",
+            })}
           </td>
-          <td className="space-x-5 border-b border-gray-200 bg-white px-5 py-5 text-sm">
-            {/* <button
-              disabled={isLoadingDeleteData}
-              type="button"
-              className={`${
-                comment?.check
-                  ? "text-yellow-600 hover:text-yellow-900"
-                  : "text-green-600 hover:text-green-900"
-              } disabled:cursor-not-allowed disabled:opacity-70`}
-              onClick={() => {
-                mutateUpdateCommentCheck({
-                  token: userState.userInfo.token,
-                  check: comment?.check ? false : true,
-                  commentId: comment._id,
-                });
-              }}
-            >
-              {comment?.check ? "Unapprove" : "Approve"}
-            </button> */}
+          <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
             <button
               type="button"
-              className=" disabled:cursor-not-allowed disabled:opacity-70"
+              className="disabled:cursor-not-allowed disabled:opacity-70"
+              onClick={() => handleDelete(report._id)}
             >
               <MdDelete color="red" fontSize={25} />
             </button>
           </td>
-          {/* <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-            <p className="text-gray-900 whitespace-no-wrap">
-              {post.categories.length > 0
-                ? post.categories
-                    .slice(0, 3)
-                    .map(
-                      (category, index) =>
-                        `${category.title}${
-                          post.categories.slice(0, 3).length === index + 1
-                            ? ""
-                            : ", "
-                        }`
-                    )
-                : "Uncategorized"}
-            </p>
-          </td> */}
-
-          {/* <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-            <div className="flex gap-x-2">
-              {post.tags.length > 0
-                ? post.tags.map((tag, index) => (
-                    <p>
-                      {tag}
-                      {post.tags.length - 1 !== index && ","}
-                    </p>
-                  ))
-                : "No tags"}
-            </div>
-          </td>
-          <td className="px-5 py-5 text-sm bg-white border-b border-gray-200 space-x-5">
-            <button
-              disabled={isLoadingDeleteData}
-              type="button"
-              className="text-red-600 hover:text-red-900 disabled:opacity-70 disabled:cursor-not-allowed"
-              onClick={() => {
-                deleteDataHandler({
-                  slug: post?.slug,
-                  token: userState.userInfo.token,
-                });
-              }}
-            >
-              Delete
-            </button>
-            <Link
-              to={`/admin/posts/manage/edit/${post?.slug}`}
-              className="text-green-600 hover:text-green-900"
-            >
-              Edit
-            </Link>
-          </td> */}
         </tr>
       ))}
     </DataTable>

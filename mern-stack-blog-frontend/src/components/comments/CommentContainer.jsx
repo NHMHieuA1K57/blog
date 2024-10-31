@@ -38,21 +38,9 @@ const CommentsContainer = ({
   //   setComment(data);
   // };
 
-  // const fetchCommentByPostId = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:9999/comment/api/posts/${postId}/comments`
-  //     );
-  //     const fetchedComments = response.data.data || [];
-  //     setCommentByPostId(fetchedComments);
-  //   } catch (error) {
-  //     console.error("Error fetching comments:", error);
-  //   }
-  // };
-
   const fetchComments = async () => {
     console.log("postId", postId);
-    
+
     try {
       const response = await axios.get(
         `http://localhost:9999/comment/api/posts/${postId}/comments`
@@ -123,6 +111,32 @@ const CommentsContainer = ({
       );
     } catch (error) {
       console.error("Error updating comment:", error);
+    }
+  };
+  //report
+  const reportCommentHandler = async (commentId) => {
+    if (!userState.userInfo) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const token = userState?.userInfo?.token || localStorage.getItem("token");
+      const reason = prompt("Please provide a reason for reporting this comment:");
+      if (!reason) return; // Nếu không có lý do, hủy thao tác
+
+      await axios.post(`http://localhost:9999/comment/api/comments/${commentId}/report`, {
+        reason: reason,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Thêm token vào header
+        },
+      });
+
+      alert("Comment reported successfully");
+    } catch (error) {
+      console.error("Error reporting comment:", error);
+      alert("An error occurred while reporting the comment.");
     }
   };
 
@@ -198,6 +212,7 @@ const CommentsContainer = ({
             // deleteComment={ deleteCommentHandler(comment._id)}
             deleteComment={deleteCommentHandler}
             updateComment={updateCommentHandler}
+            reportComment={reportCommentHandler} // Truyền hàm vào đây
             replies={getReplies(comment._id)}
           />
         ))}
