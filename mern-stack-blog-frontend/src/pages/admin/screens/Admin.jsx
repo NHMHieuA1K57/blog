@@ -18,6 +18,7 @@ const Admin = () => {
   const { data, isLoading } = useGetDataPosts();
   const navigate = useNavigate();
   const top3Posts = data.slice(0, 3);
+  const [visibleComments, setVisibleComments] = useState(5);
 
   const token = userState?.userInfo?.token || localStorage.getItem("token");
 
@@ -53,7 +54,7 @@ const Admin = () => {
           <h3>Comments</h3>
           <p className="mb-5 text-red-500">You have {comments.length} comments</p>
           <ul className="flex flex-col gap-5">
-            {comments.map((comment) => (
+            {comments.slice(0, visibleComments).map((comment) => (
               <li key={comment._id} className="flex items-center gap-2">
                 <div className="comment-text">
                   <span>{comment.account.name}</span>
@@ -67,7 +68,14 @@ const Admin = () => {
               </li>
             ))}
           </ul>
-          <button className="view-more-btn">View More</button>
+          {visibleComments < comments.length && (
+            <button
+              className="view-more-btn"
+              onClick={() => setVisibleComments(comments.length)}
+            >
+              View More
+            </button>
+          )}
         </div>
       </div>
 

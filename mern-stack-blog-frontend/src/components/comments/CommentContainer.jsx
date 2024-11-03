@@ -82,7 +82,7 @@ const CommentsContainer = ({
         }
       );
 
-      setComment([...comments, response.data.data]); // Thêm comment mới vào danh sách
+      setComment((comments) =>[...comments, response.data.data]); // Thêm comment mới vào danh sách
     } catch (error) {
       console.error("Error adding comment:", error);
     }
