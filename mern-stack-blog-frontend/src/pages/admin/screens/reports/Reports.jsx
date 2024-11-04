@@ -26,12 +26,13 @@ const Reports = () => {
     fetchReportedComments();
   }, []);
 
-  const handleDelete = async (commentId) => {
+  // Xóa report mà không xóa comment
+  const handleDeleteReport = async (commentId) => {
     try {
-      await axios.delete(`http://localhost:9999/api/comments/${commentId}`);
+      await axios.delete(`http://localhost:9999/api/comments/reports/${commentId}`);
       setReports((prevReports) => prevReports.filter((report) => report._id !== commentId));
     } catch (error) {
-      console.error("Error deleting comment:", error);
+      console.error("Error deleting report:", error);
     }
   };
 
@@ -75,7 +76,7 @@ const Reports = () => {
             <button
               type="button"
               className="disabled:cursor-not-allowed disabled:opacity-70"
-              onClick={() => handleDelete(report._id)}
+              onClick={() => handleDeleteReport(report._id)}
             >
               <MdDelete color="red" fontSize={25} />
             </button>
