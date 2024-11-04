@@ -12,7 +12,10 @@ const Reports = () => {
     const fetchReportedComments = async () => {
       try {
         const response = await axios.get('http://localhost:9999/api/comments/reports');
-        setReports(response.data);
+        const sortedReports = response.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setReports(sortedReports);
       } catch (error) {
         console.error("Error fetching reports:", error);
       } finally {
