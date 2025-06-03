@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { pageUrls } from "../constants/pageUrls";
 
 export const Wrapper = ({ children, roles }) => {

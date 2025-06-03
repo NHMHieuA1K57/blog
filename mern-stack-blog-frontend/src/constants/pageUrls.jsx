@@ -13,7 +13,7 @@ export const pageUrls = {
   POSTS: "/admin/posts/manage",
   CATEGORIES: "/admin/categories/manage",
   USERS: "/admin/users/manage",
-  ADD_NEW_BLOG: "/admin/addNewBlog",
+  ADMIN_ADD_NEW_BLOG: "/admin/addNewBlog",
   EDIT_BLOG: "/admin/editBlog/:postId",
   
   BLOG_DETAIL: "/detail/:id",

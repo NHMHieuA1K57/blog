@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 
 const Alert = ({ message, type, onClose }) => {
   const alertStyles = {
@@ -7,29 +8,47 @@ const Alert = ({ message, type, onClose }) => {
     warning: "bg-yellow-100 border-yellow-400 text-yellow-700",
   };
 
+  Alert.propTypes = {
+  message: PropTypes.string.isRequired,     // 🟡 message phải là chuỗi và bắt buộc
+  type: PropTypes.oneOf(["success", "error", "info", "warning"]).isRequired,  // 🟡 chỉ chấp nhận 1 trong các giá trị
+  onClose: PropTypes.func.isRequired,       // 🟡 onClose phải là hàm và bắt buộc
+};
+
+let alertTitle;
+
+if (type === "error") {
+  alertTitle = "Error!";
+} else if (type === "success") {
+  alertTitle = "Success!";
+} else {
+  alertTitle = "Warning!";
+}
+
   return (
     <div
       className={`border px-4 py-3 rounded relative ${alertStyles[type]}`}
       role="alert"
     >
       <strong className="font-bold">
-        {type === "error" ? "Error!" : type === "success" ? "Success!" : "Warning!"}
+        {alertTitle}
       </strong>
       <span className="block sm:inline"> {message}</span>
-      <span
-        className="absolute top-0 bottom-0 right-0 px-4 py-3"
-        onClick={onClose}
-      >
-        <svg
-          className="fill-current h-6 w-6 text-red-500"
-          role="button"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-        >
-          <title>Close</title>
-          <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-        </svg>
-      </span>
+      <button
+  onClick={onClose}
+  className="absolute top-0 bottom-0 right-0 px-4 py-3"
+  aria-label="Close alert"
+  type="button"  // nên thêm type để tránh mặc định là "submit"
+>
+  <svg
+    className="fill-current h-6 w-6 text-red-500"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 20 20"
+  >
+    <title>Close</title>
+    <path d="..." />
+  </svg>
+</button>
+
     </div>
   );
 };

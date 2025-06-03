@@ -6,7 +6,7 @@ import { pageUrls } from "../constants/pageUrls";
 
 function ProtectedRoute({ children }) {
   const userState = useSelector((state) => state.user);
-  if (userState.userInfo) return children ? children : <Outlet />;
+  if (userState.userInfo) return children || <Outlet />;
 
   return <Navigate to={pageUrls.LOGIN} replace />;
 }

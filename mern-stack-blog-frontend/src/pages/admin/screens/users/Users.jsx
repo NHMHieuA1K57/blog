@@ -29,9 +29,10 @@ const Users = () => {
         setUsers(response.data.data);
         setLoading(false);
       } catch (err) {
-        setError("Some thing went wrong, cannot get users.");
-        setLoading(false);
-      }
+  console.error("Failed to fetch users:", err);
+  setError("Something went wrong. Cannot get users.");
+  setLoading(false);
+}
     };
 
     fetchUsers();
@@ -146,6 +147,7 @@ const Users = () => {
                 <a href="/" className="relative block">
                   <img
                     src={user.avatar || images.userImage}
+                    alt=""
                     className="mx-auto aspect-square w-10 rounded-lg object-cover"
                   />
                 </a>

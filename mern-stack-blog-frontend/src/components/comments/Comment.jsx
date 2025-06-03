@@ -32,10 +32,10 @@ const Comment = ({
   const replyOnUserId = comment.user?._id;
   const userState = useSelector((state) => state.user);
   const navigate = useNavigate();
-  const handleReport = () => {
-    // Add the logic for reporting the comment here
-    console.log(`Reported comment ID: ${comment?._id}`);
-  };
+  // const handleReport = () => {
+  //   // Add the logic for reporting the comment here
+  //   console.log(`Reported comment ID: ${comment?._id}`);
+  // };
 
   return (
     <div

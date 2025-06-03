@@ -25,7 +25,7 @@ const ArticleDetailPage = () => {
           <img
             className="w-full rounded-xl"
             src={postDetail?.images[0] || images.Post1Image}
-            alt="image"
+            alt={postDetail?.title || "Post thumbnail"}
           />
           <div className="mt-4 flex gap-2">
             <Link

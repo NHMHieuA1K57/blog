@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { getCommentsData } from "../../data/comments";
 import Comment from "./Comment";
@@ -31,14 +31,14 @@ const CommentsContainer = ({
   useEffect(() => {
     fetchComments();
     // fetchCommentByPostId();
-  }, [comment.length, comment.content]);
+  }, [fetchComments, comment.length, comment.content]);
 
   // const fetchComments = async () => {
   //   const data = await getCommentsData();
   //   setComment(data);
   // };
 
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     console.log("postId", postId);
 
     try {
@@ -52,7 +52,7 @@ const CommentsContainer = ({
       console.error("Error fetching comments:", error);
       setLoading(false);
     }
-  };
+  }, [postId]); // fetchComments phụ thuộc vào postId
 
   //! Add Comment
   const addCommentHandler = async (
