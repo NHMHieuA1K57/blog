@@ -1,10 +1,15 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 const Alert = ({ message, type, onClose }) => {
   const alertStyles = {
     success: "bg-green-100 border-green-400 text-green-700",
     error: "bg-red-100 border-red-400 text-red-700",
     warning: "bg-yellow-100 border-yellow-400 text-yellow-700",
+  };
+  Alert.propTypes = {
+    message: PropTypes.string.isRequired,
+    type: PropTypes.oneOf(["success", "error", "warning"]).isRequired,
+    onClose: PropTypes.func.isRequired,
   };
 
   return (
