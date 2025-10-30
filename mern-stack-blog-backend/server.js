@@ -7,9 +7,9 @@ const httpErrors = require("http-errors");
 const DB = require("./models/index");
 const accountRoute = require("./routes/account.route");
 const commentRoute = require("./routes/comment.route");
-const postRoute = require('./routes/postRoute');
-const categoryRoute = require('./routes/categoryRoute')
-const reportRoutes = require('./routes/report.route');
+const postRoute = require("./routes/postRoute");
+const categoryRoute = require("./routes/categoryRoute");
+const reportRoutes = require("./routes/report.route");
 require("dotenv").config();
 
 // khoi tao web server bang express
@@ -17,24 +17,24 @@ const app = express();
 
 // them cac middleware vao web server
 app.use(morgan("dev"));
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(bodyParser.json());
 app.use(cors({
-  origin: '*',
-  methods: 'GET,POST,PUT,DELETE,PATCH',
-  allowedHeaders: 'Content-Type,Authorization'
+  origin: "*",
+  methods: "GET,POST,PUT,DELETE,PATCH",
+  allowedHeaders: "Content-Type,Authorization"
 }));
 
 // thuc hien tiep nhan request tu client bang get
 app.get("/", async (req, res, next) => {
   res.status(200).json({ message: "Welcome to RESTFul API with NodeJs " });
 });
-app.use('/api', reportRoutes);
+app.use("/api", reportRoutes);
 app.use("/account", accountRoute);
 app.use("/comment", commentRoute);
-app.use('/blog', postRoute);
-app.use('/cate', categoryRoute);
+app.use("/blog", postRoute);
+app.use("/cate", categoryRoute);
 
 // them middleware xu ly loi tren : router , Controller , Model
 app.use(async (req, res, next) => {

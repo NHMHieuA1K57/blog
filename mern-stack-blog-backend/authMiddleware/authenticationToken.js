@@ -3,8 +3,8 @@ const jwt = require("jsonwebtoken");
 // Middleware xác thực token
 const authenticationToken = (req, res, next) => {
   // Lấy token từ header 'Authorization'
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // 'Bearer <token>'
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // 'Bearer <token>'
 
   if (!token) {
     return res.status(401).json({ message: "Access denied. No token provided." });
@@ -21,7 +21,7 @@ const authenticationToken = (req, res, next) => {
     next(); // Cho phép tiếp tục nếu token hợp lệ
   } catch (error) {
     // Kiểm tra xem lỗi là do token hết hạn hay không
-    if (error.name === 'TokenExpiredError') {
+    if (error.name === "TokenExpiredError") {
       return res.status(401).json({ message: "Token has expired. Please log in again." });
     }
     // Nếu token không hợp lệ

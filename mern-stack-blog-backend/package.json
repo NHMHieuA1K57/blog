@@ -2,9 +2,11 @@
   "name": "mern-stack-blog-backend",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server"
+    "start": "nodemon server",
+    "test": "jest --runInBand"
   },
   "keywords": [],
   "author": "",
@@ -24,5 +26,11 @@
     "nodemailer": "^6.9.15",
     "nodemon": "^3.1.7",
     "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "eslint": "^9.38.0",
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^10.2.3",
+    "supertest": "^7.1.4"
   }
 }

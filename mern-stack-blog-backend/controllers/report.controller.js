@@ -1,12 +1,12 @@
 // reportsController.js
-const Comment = require('../models/comment.model');
+const Comment = require("../models/comment.model");
 
 async function getReportedComments(req, res) {
     try {
         const reportedComments = await Comment.find({ reported_by: { $exists: true, $ne: [] } })
-            .populate('post', 'title')  // Assuming 'title' is a field in the Post model
-            .populate('account', 'name') // Assuming 'name' is a field in the Account model
-            .populate('reported_by', 'name') // To get names of users who reported
+            .populate("post", "title")  // Assuming 'title' is a field in the Post model
+            .populate("account", "name") // Assuming 'name' is a field in the Account model
+            .populate("reported_by", "name") // To get names of users who reported
             .exec();
 
         res.status(200).json(reportedComments);

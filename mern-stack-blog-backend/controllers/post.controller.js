@@ -1,6 +1,6 @@
-const {uploadToCloudinary} = require('../config/cloudinaryConfig');
-const Post = require('../models/post.model');
-const Category = require('../models/category.model');
+const {uploadToCloudinary} = require("../config/cloudinaryConfig");
+const Post = require("../models/post.model");
+const Category = require("../models/category.model");
 
 async function createPost(req, res, next) {
   const { title, content, category } = req.body;
@@ -9,10 +9,10 @@ async function createPost(req, res, next) {
     return res.status(400).json({ message: "Vui lòng nhập tất cả các trường bắt buộc" });
   }
   if (!req.files || req.files.length === 0) {
-    return res.status(400).json({ message: 'Không có file ảnh nào được upload.' });
+    return res.status(400).json({ message: "Không có file ảnh nào được upload." });
   }
   try {
-    const uploadPromises = req.files.map(file => uploadToCloudinary(file.buffer, 'SDN302'));
+    const uploadPromises = req.files.map(file => uploadToCloudinary(file.buffer, "SDN302"));
     const images = await Promise.all(uploadPromises);
 
     const categoryData = await Category.findById(category);
@@ -29,7 +29,7 @@ async function createPost(req, res, next) {
 
     await newPost.save();  
     res.status(201).json({
-      message: 'Tạo bài viết thành công',
+      message: "Tạo bài viết thành công",
       post: {
         id: newPost._id,
         title: newPost.title,
@@ -69,7 +69,7 @@ async function updatePost(req, res, next) {
 
     let images = post.images;
     if (req.files && req.files.length > 0) {
-      const uploadPromises = req.files.map(file => uploadToCloudinary(file.buffer, 'SDN302'));
+      const uploadPromises = req.files.map(file => uploadToCloudinary(file.buffer, "SDN302"));
       images = await Promise.all(uploadPromises);
     }
 
@@ -86,7 +86,7 @@ async function updatePost(req, res, next) {
     await post.save();
 
     res.status(200).json({
-      message: 'Post updated successfully',
+      message: "Post updated successfully",
       post: {
         id: post._id,
         title: post.title,

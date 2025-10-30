@@ -1,7 +1,7 @@
-const multer = require('multer');
-const path = require('path');
-const cloudinary = require('cloudinary').v2;
-require('dotenv').config();
+const multer = require("multer");
+const path = require("path");
+const cloudinary = require("cloudinary").v2;
+require("dotenv").config();
 
 
 cloudinary.config({
@@ -21,7 +21,7 @@ const fileFilter = (req, file, cb) => {
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb(new Error('Chỉ chấp nhận các file ảnh có định dạng .jpeg, .jpg, .png!'));
+    cb(new Error("Chỉ chấp nhận các file ảnh có định dạng .jpeg, .jpg, .png!"));
   }
 };
 
@@ -36,7 +36,7 @@ const uploadToCloudinary = (buffer, folder) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream({
       folder: folder,  // Thư mục lưu trữ trong Cloudinary
-      resource_type: 'auto'
+      resource_type: "auto"
     }, (error, result) => {
       if (error) {
         return reject(error);

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const notificationSchema = new mongoose.Schema({
     recipient: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Account',  // Người nhận thông báo, có thể là admin hoặc user
+        ref: "Account",  // Người nhận thông báo, có thể là admin hoặc user
         required: true 
     },
     content: { 
@@ -12,16 +12,16 @@ const notificationSchema = new mongoose.Schema({
     },
     type: { 
         type: String, 
-        enum: ['comment', 'report', 'ban', 'other'],  // Loại thông báo
+        enum: ["comment", "report", "ban", "other"],  // Loại thông báo
         required: true 
     },
     reference: { 
         type: mongoose.Schema.Types.ObjectId,  // Tham chiếu đến đối tượng liên quan, ví dụ: comment, post
-        refPath: 'onModel' 
+        refPath: "onModel" 
     },
     onModel: {
         type: String, 
-        enum: ['Comment', 'Post'],  // Cho phép tham chiếu đến các collection khác nhau
+        enum: ["Comment", "Post"],  // Cho phép tham chiếu đến các collection khác nhau
         required: true
     },
     isRead: { 
@@ -31,7 +31,7 @@ const notificationSchema = new mongoose.Schema({
 },{
     timestamps: true,
     versionKey: false
-})
+});
 
 const Notification = mongoose.model("Notification", notificationSchema);
 module.exports = Notification;
